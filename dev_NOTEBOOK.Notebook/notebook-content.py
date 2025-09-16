@@ -49,15 +49,3 @@ df.write.format("delta").mode("overwrite").saveAsTable("Screenfail_USV_SubjectVi
 # META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }
-
-# CELL ********************
-
-df = spark.createDataFrame(pdf)
-
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
