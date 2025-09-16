@@ -53,7 +53,7 @@ df.write.format("delta").mode("overwrite").saveAsTable("Screenfail_USV_SubjectVi
 # CELL ********************
 
 df = spark.createDataFrame(pdf)
-ghvgh
+
 
 # METADATA ********************
 
