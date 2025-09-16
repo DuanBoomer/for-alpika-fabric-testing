@@ -1,0 +1,22 @@
+table 'Column Chart'
+	lineageTag: b3542091-121b-405e-bc80-436aabd24237
+
+	column 'select axis'
+		dataType: string
+		lineageTag: 7902c6f9-3134-4432-baac-baff1f01d8b6
+		summarizeBy: none
+		sourceColumn: select axis
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Column Chart-41ab6935-e9ef-45f5-9e91-303d973d3b34' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45W8g1xUYrViVaKhNKqCs4ZiXnpqQq+6AJgFbEA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"select axis" = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"select axis", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

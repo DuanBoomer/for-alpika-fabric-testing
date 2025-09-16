@@ -1,0 +1,111 @@
+table 'SSR Performance Metrics'
+	lineageTag: 7b0e2748-3a53-4619-b678-e21ad3d9fe58
+
+	measure 'weeks param measure' = SELECTEDVALUE('Weeks_Param'[week Param Fields])
+		lineageTag: afcdf1da-aa79-4c14-a141-84c50d512fed
+
+	column Parameter
+		lineageTag: 14a51d44-b066-4a97-9d10-9535befef9d1
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parameter Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Parameter Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Fields'
+		lineageTag: 61909bba-7766-4864-922e-1d73b82d9025
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parameter Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Order'
+		isHidden
+		formatString: 0
+		lineageTag: 0df3b96d-5dbc-480f-bf66-e36193ab102c
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metrics =
+			
+			
+			SWITCH('SSR Performance Metrics'[Parameter],
+			"SSR Name","SSR Name",
+			"YTD % Chg Rank","YTD % Chg Rank",
+			"Store Count","Store Count",
+			"TTL Weekly Sales TY","Weekly",
+			"TTL Weekly sales LY","Weekly",
+			"$ Change Weekly","Weekly",
+			"% Change Weekly","Weekly",
+			"TTL YTD Sales TY","YTD",
+			"TTL YTD sales LY","YTD",
+			"$ Change YTD","YTD",
+			"% Change YTD","YTD")
+		lineageTag: 773a6ac2-38f9-48b0-a4c7-29e06b1fcd3a
+		summarizeBy: none
+		sortByColumn: SelectMetricsSort
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column SelectMetricsSort = RELATED('SupportTable_SortMetrics_SSR Performance'[SelectMetricsSort])
+		formatString: 0
+		lineageTag: fc9770a5-be25-4a7f-92d6-b205eb59bb54
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Metrics For WaterFall Text' =
+			
+			
+			SWITCH('SSR Performance Metrics'[Parameter],
+			"SSR Name","SSR Name",
+			"YTD % Chg Rank","YTD % Chg Rank",
+			"Store Count","Store Count",
+			"TTL MTD Sales TY","MTD TY",
+			"TTL MTD sales LY","MTD LY",
+			"$ Change MTD"," $ Change MTD",
+			"% Change MTD","% Change MTD",
+			"TTL YTD Sales TY","YTD TY",
+			"TTL YTD sales LY","YTD TY",
+			"$ Change YTD","$ Change YTD",
+			"% Change YTD","% Change YTD")
+		lineageTag: f78f4899-0c4c-4a54-9b26-f577f7ee4354
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'SSR Performance Metrics-8068c125-df2c-4266-9f9c-62e7ac8015e7' = calculated
+		mode: import
+		source =
+				{
+				    ("SSR Name", NAMEOF('Key Measures'[SSR Name]), 0) ,
+				    ("YTD % Chg Rank", NAMEOF('Key Measures'[YTD % Chg Rank]), 1),
+				    ("Store Count", NAMEOF('Key Measures'[Store Count]), 2),
+				    ("TTL Weekly Sales TY", NAMEOF('Weeks_Param'[week Param]) , 3),
+				    ("TTL Weekly sales LY", NAMEOF('Weeks_Param'[week Param Fields]), 4),
+				    ("$ Change Weekly", NAMEOF('Weeks_Param'[week Param Fields]), 5),
+				    ("% Change Weekly", NAMEOF('Weeks_Param'[week Param Fields]), 6),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 7),
+				    ("TTL YTD sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 8),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 9),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 10)
+				}
+
+	annotation PBI_Id = 42fef0682785421aba2200a7edf34a48
+

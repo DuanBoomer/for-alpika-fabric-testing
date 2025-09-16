@@ -1,0 +1,51 @@
+table LastNWEEKSsales
+	lineageTag: 9f2ae887-aba5-4594-bb81-a08430302143
+
+	column LastNWeeks_new
+		lineageTag: c4c2f3b0-bf36-4402-852c-612adfc6d9b9
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'LastNWeeks_new Order'
+
+		relatedColumnDetails
+			groupByColumn: 'LastNWeeks_new Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LastNWeeks_new Fields'
+		isHidden
+		lineageTag: 62e0f9cc-93dd-459f-af20-f61feba55e4f
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'LastNWeeks_new Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LastNWeeks_new Order'
+		isHidden
+		formatString: 0
+		lineageTag: 10a270a9-88fb-40b5-b0c8-146280af17bc
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition LastNWEEKSsales = calculated
+		mode: import
+		source =
+				{
+				    ("Last1WeekSales", NAMEOF('Key Measures'[Last1weeksales]), 0),
+				    ("Last4WeekSales", NAMEOF('Key Measures'[Last4WeekSales]), 1),
+				    ("Last13WeekSales", NAMEOF('Key Measures'[Last13WeekSales]), 2),
+				    ("Last26WeekSales", NAMEOF('Key Measures'[Last26WeekSales]), 3),
+				    ("Last52WeekSales", NAMEOF('Key Measures'[Last52WeekSales]), 4)
+				}
+
+	annotation PBI_Id = 6e6d52cb12744ca38797adfde1968289
+

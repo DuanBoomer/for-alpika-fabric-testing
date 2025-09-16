@@ -1,0 +1,87 @@
+model Model
+	culture: en-IN
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		fastCombine
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup Coppertone
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup Eucerin
+
+	annotation PBI_QueryGroupOrder = 1
+
+queryGroup Master
+
+	annotation PBI_QueryGroupOrder = 2
+
+queryGroup Fact
+
+	annotation PBI_QueryGroupOrder = 3
+
+/// Errors in queries that were loaded on 18-07-2025 14:41:38.
+queryGroup 'Query Errors - 18-07-2025 14:41:38'
+
+	annotation PBI_QueryGroupOrder = 4
+
+annotation PBIDesktopVersion = 2.143.1378.0 (25.05)+4e1de9c957866bc5336e0d250838314aa54ff3a8
+
+annotation PBI_QueryOrder = ["Coppertone_CVS","Coppertone_Walgreens","Coppertone_Walmart","Coppertone_Target","Eucerin_Walgreens","Eucerin_Target","Eucerin_CVS","Key Measures","FactTable","Suncare Coverage Planning","Retailer Image","Product Image","CustomStoreTotal","Eucerin Kroger","Coppertone Kroger","Eucerin_Walmart","Column Chart","CustomColulmSelection","SupportTable_SortMetrics_SSR Performance","SupportTable_SortMetrics_Store Performance","RetailerOrder","Fact_Coppertone_CVS_Category_POS","FAQs","Last N Week","Week Table","Last Refresh Time","Retailer Image (2)","Coppertone Kroger (2)","Errors in Suncare Coverage Planning","Suncare Coverage Planning (2)"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation __TEdtr = 1
+
+ref table DateTableTemplate_acc84dbe-81e5-4c6e-b684-18342384db6b
+ref table Date
+ref table LocalDateTable_feb02f90-629f-4ced-87ab-72c69cbabb66
+ref table 'Key Measures'
+ref table FactTable
+ref table LocalDateTable_89e7e791-0090-4448-863d-a0b9b49fdd30
+ref table 'Suncare Coverage Planning'
+ref table 'Retailer Image'
+ref table 'Product Image'
+ref table CustomStoreTotal
+ref table Retailers
+ref table 'Retailer (Stacked)'
+ref table 'Retailer +others'
+ref table 'Column Chart'
+ref table CustomColulmSelection
+ref table 'SSR Performance Metrics'
+ref table 'Store Performance Metrics'
+ref table 'SupportTable_SortMetrics_SSR Performance'
+ref table 'SupportTable_SortMetrics_Store Performance'
+ref table MTD
+ref table YTD
+ref table 'Selection Column Y-Axis'
+ref table 'Dynamic X-Axis by Parameter'
+ref table '% Change'
+ref table RetailerOrder
+ref table Yearly_Weekly_%Change_Selection
+ref table Fact_Coppertone_CVS_Category_POS
+ref table 'Store Performance Metrics (CVS Cat)'
+ref table FAQs
+ref table 'Metrics (Summary by Retailer & SSR )'
+ref table 'Last N Months'
+ref table 'Metrics(Store Detail View)'
+ref table 'Last N Week'
+ref table 'Week Table'
+ref table 'Last Refresh Time'
+ref table LocalDateTable_683a7774-c088-4f75-8188-9cc36ac5864d
+ref table LocalDateTable_e16ed1d8-fe26-430b-be07-ef1852b2f678
+ref table Parameter
+ref table WeekParameter
+ref table LastNWEEKSsales
+ref table LocalDateTable_12319125-0322-4648-9923-1faa118d85e9
+ref table LocalDateTable_d19e8352-091d-423c-b9f0-572a17df5c52
+ref table Weeks_Param
+ref table 'week param all store big'
+ref table 'week param all store small'
+ref table Division_Performance
+
+ref cultureInfo en-IN
+

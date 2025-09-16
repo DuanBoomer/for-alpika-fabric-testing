@@ -1,0 +1,26 @@
+table WeekParameter
+	lineageTag: 86a8864d-e309-4b41-99b8-91e912cfaec7
+
+	measure 'WeekParameter Value' = SELECTEDVALUE('WeekParameter'[WeekParameter], 1)
+		formatString: 0
+		lineageTag: 96fb29d4-b4f1-4c9c-8529-cf873ee32f13
+
+	column WeekParameter
+		formatString: 0
+		lineageTag: 71b973f8-ffb7-429a-ba43-ce2760b57808
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition WeekParameter = calculated
+		mode: import
+		source = GENERATESERIES(1, 52, 1)
+
+	annotation PBI_Id = 7ce25f7ff0a54c9d9af8ac66b37a8b87
+

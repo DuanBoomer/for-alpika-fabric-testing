@@ -1,0 +1,91 @@
+table Fact_Coppertone_CVS_Category_POS
+	lineageTag: 9723155b-4d45-4e52-b3c5-87329d5006f8
+
+	column Product
+		dataType: string
+		lineageTag: f7446e53-c055-4684-bbd7-e261ff4be89e
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 80770603-235f-4620-a8ed-4e4d1190c1b1
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Value
+		dataType: double
+		lineageTag: 45cd21ad-7d51-46ac-8b31-0d28b59b48be
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Retailer
+		dataType: string
+		lineageTag: 94436bdb-5168-442d-9272-51dd16a2f636
+		summarizeBy: none
+		sourceColumn: Retailer
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: ae51c1a1-9049-4661-b899-91742676aaa2
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column Inserted_Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 839c079a-07b3-4bde-9641-bf6f5d5c5aa5
+		summarizeBy: none
+		sourceColumn: Inserted_Date
+
+		variation Variation
+			isDefault
+			relationship: ed8ab960-dc73-44a4-83a5-feb61841404b
+			defaultHierarchy: LocalDateTable_e16ed1d8-fe26-430b-be07-ef1852b2f678.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column JOINKEY
+		dataType: string
+		lineageTag: 1ac8c523-262c-46b6-8f0d-c411089f7c53
+		summarizeBy: none
+		sourceColumn: JOINKEY
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fact_Coppertone_CVS_Category_POS-641c4c97-3fb7-44d5-b51e-2aa4bfc2904c = m
+		mode: import
+		queryGroup: Fact
+		source =
+				let
+				    Source = Sql.Databases("45abcdnsw5ru7e2ughqdsi5nlu-u2sji3ypczjero2vy4kky64n2i.datawarehouse.fabric.microsoft.com"),
+				    Bronze_Layer = Source{[Name="Bronze_Layer"]}[Data],
+				    #"dbo_CVS-suncare70" = Bronze_Layer{[Schema="dbo",Item="CVS-suncare70"]}[Data],
+				    #"Merged Queries" = Table.NestedJoin(#"dbo_CVS-suncare70", {"Retailer"}, RetailerOrder, {"Retailer"}, "RetailerOrder", JoinKind.LeftOuter),
+				    #"Expanded RetailerOrder" = Table.ExpandTableColumn(#"Merged Queries", "RetailerOrder", {"ReatilerOrder"}, {"ReatilerOrder"}),
+				    #"Inserted Merged Column" = Table.AddColumn(#"Expanded RetailerOrder", "JOINKEY", each Text.Combine({Text.From([Store], "en-IN"), Text.From([ReatilerOrder], "en-IN")}, ""), type text),
+				    #"Removed Columns" = Table.RemoveColumns(#"Inserted Merged Column",{"Store", "ReatilerOrder"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,32 @@
+table 'Last Refresh Time'
+	lineageTag: daf35112-97c6-492f-8810-7f0e6f0a5b7c
+
+	column 'Last Refresh Time'
+		dataType: dateTime
+		formatString: m-dd-yyyy h:nn:ss
+		lineageTag: 1e7a7865-f3fb-420c-afa5-89b4b8991d08
+		summarizeBy: none
+		sourceColumn: Last Refresh Time
+
+		variation Variation
+			isDefault
+			relationship: 8a47dc29-c9a2-43bf-a9d1-c77d2f8d085f
+			defaultHierarchy: LocalDateTable_683a7774-c088-4f75-8188-9cc36ac5864d.'Date Hierarchy'
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	partition 'Last Refresh Time-a5d1d12b-31cd-42d8-80e5-41a1d3e2362b' = m
+		mode: import
+		queryGroup: Coppertone
+		source =
+				let
+				    Source = DateTime.LocalNow()
+				in
+				    Source
+
+	annotation PBI_ResultType = DateTime
+

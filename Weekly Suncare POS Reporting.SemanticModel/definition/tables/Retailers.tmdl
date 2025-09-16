@@ -1,0 +1,21 @@
+table Retailers
+	lineageTag: 90cafac0-ebab-4ebc-a4e1-69106750cc50
+
+	column Retailer
+		lineageTag: 80cf5da3-a4f7-4a8d-9a35-7f095a5854e9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: FactTable[Retailer]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Retailers-bd3e3cdf-cbc3-4fe5-bb05-0d6e5764cd83 = calculated
+		mode: import
+		source = ```
+				
+				VALUES(FactTable[retailer])
+				
+				```
+
+	annotation PBI_Id = 6da78b464b5449869b6f299a5ee4d312
+

@@ -1,0 +1,217 @@
+table 'week param all store big'
+	lineageTag: 0c0b73ad-4886-4790-b21f-a2932b39bd60
+
+	column 'week param all store big'
+		lineageTag: 6d821a3e-b8ef-4af4-abda-92a7ee215a85
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'week param all store big Order'
+
+		relatedColumnDetails
+			groupByColumn: 'week param all store big Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'week param all store big Fields'
+		isHidden
+		lineageTag: 4aab30e2-7d24-4fc4-b8bd-86583e120b76
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'week param all store big Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'week param all store big Order'
+		isHidden
+		formatString: 0
+		lineageTag: 398789e9-5cfd-41a2-924d-1609c7ef8e49
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Window Key' = ```
+			
+			
+			SWITCH(
+			
+			    TRUE(),
+			
+			    [week param all store big Order] IN {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19}, 1,
+			
+			    [week param all store big Order] IN {20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39}, 2,
+			
+			    [week param all store big Order] IN {40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59}, 3,
+			
+			    [week param all store big Order] IN {60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79}, 4,
+			
+			    [week param all store big Order] IN {80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99}, 6,
+			
+			    BLANK()
+			
+			)
+			
+			 
+			```
+		formatString: 0
+		lineageTag: 50d3206d-b91c-4afb-9a66-4fb5c08bf507
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metrics =
+			
+			
+			SWITCH(
+			'week param all store big'[week param all store big],
+			"Address","Address",
+			"City","City",
+			"Zip","Zip",
+			"St","State",
+			"Division/Group","Division",
+			"Region","Region",
+			"District","District",
+			"District Manager","District Manager",
+			"SMM","SMM",
+			"SSR","SSR",
+			"SSR Name","SSR Name",
+			"Suncare - Total BDF YTD Rank","Suncare - Total BDF YTD Rank",
+			"TTL Weekly Sales TY","Weekly",
+			"TTL Weekly sales LY","Weekly",
+			"$ Change Weekly","Weekly",
+			"% Change Weekly","Weekly",
+			"TTL YTD Sales TY","YTD",
+			"TTL YTD sales LY","YTD",
+			"$ Change YTD","YTD",
+			"% Change YTD","YTD",
+			"Weekly"  -- Default value (like ELSE)
+			)
+		lineageTag: 6c3c44fd-7fd1-405b-bde7-ec2f72cd4e0c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'week param all store big' = calculated
+		mode: import
+		source =
+				{
+				    -- 1 Week
+				    ("Address", NAMEOF('Suncare Coverage Planning'[Address]), 0),
+				    ("City", NAMEOF('Suncare Coverage Planning'[City]), 1),
+				    ("Zip", NAMEOF('Suncare Coverage Planning'[Zip]), 2),
+				    ("St", NAMEOF('Suncare Coverage Planning'[St]), 3),
+				    ("Division/Group", NAMEOF('Suncare Coverage Planning'[Division/Group]), 4),
+				    ("Region", NAMEOF('Suncare Coverage Planning'[Region]), 5),
+				    ("District", NAMEOF('Suncare Coverage Planning'[District]), 6),
+				    ("District Manager", NAMEOF('Suncare Coverage Planning'[District Manager]), 7),
+				    ("SMM", NAMEOF('Suncare Coverage Planning'[SMM]), 8),
+				    ("SSR", NAMEOF('Suncare Coverage Planning'[SSR]), 9),
+				    ("SSR Name", NAMEOF('Suncare Coverage Planning'[SSR Name]), 10),
+				    ("Suncare - Total BDF YTD Rank", NAMEOF('Key Measures'[Suncare - Total BDF YTD Rank]), 11),
+				    ("TTL L1W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 12),
+				    ("TTL L1W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 13),
+				    ("$ Change L1W", NAMEOF('Key Measures'[$ Change Weekly]), 14),
+				    ("% Change L1W", NAMEOF('Key Measures'[% Change Weekly]), 15),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 16),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 17),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 18),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 19),
+				
+				    -- 4 Weeks
+				    ("Address", NAMEOF('Suncare Coverage Planning'[Address]), 20),
+				    ("City", NAMEOF('Suncare Coverage Planning'[City]), 21),
+				    ("Zip", NAMEOF('Suncare Coverage Planning'[Zip]), 22),
+				    ("St", NAMEOF('Suncare Coverage Planning'[St]), 23),
+				    ("Division/Group", NAMEOF('Suncare Coverage Planning'[Division/Group]), 24),
+				    ("Region", NAMEOF('Suncare Coverage Planning'[Region]), 25),
+				    ("District", NAMEOF('Suncare Coverage Planning'[District]), 26),
+				    ("District Manager", NAMEOF('Suncare Coverage Planning'[District Manager]), 27),
+				    ("SMM", NAMEOF('Suncare Coverage Planning'[SMM]), 28),
+				    ("SSR", NAMEOF('Suncare Coverage Planning'[SSR]), 29),
+				    ("SSR Name", NAMEOF('Suncare Coverage Planning'[SSR Name]), 30),
+				    ("Suncare - Total BDF YTD Rank", NAMEOF('Key Measures'[Suncare - Total BDF YTD Rank]), 31),
+				    ("TTL L4W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 32),
+				    ("TTL L4W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 33),
+				    ("$ Change L4W", NAMEOF('Key Measures'[$ Change Weekly]), 34),
+				    ("% Change L4W", NAMEOF('Key Measures'[% Change Weekly]), 35),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 36),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 37),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 38),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 39),
+				
+				    -- 13 Weeks
+				    ("Address", NAMEOF('Suncare Coverage Planning'[Address]), 40),
+				    ("City", NAMEOF('Suncare Coverage Planning'[City]), 41),
+				    ("Zip", NAMEOF('Suncare Coverage Planning'[Zip]), 42),
+				    ("St", NAMEOF('Suncare Coverage Planning'[St]), 43),
+				    ("Division/Group", NAMEOF('Suncare Coverage Planning'[Division/Group]), 44),
+				    ("Region", NAMEOF('Suncare Coverage Planning'[Region]), 45),
+				    ("District", NAMEOF('Suncare Coverage Planning'[District]), 46),
+				    ("District Manager", NAMEOF('Suncare Coverage Planning'[District Manager]), 47),
+				    ("SMM", NAMEOF('Suncare Coverage Planning'[SMM]), 48),
+				    ("SSR", NAMEOF('Suncare Coverage Planning'[SSR]), 49),
+				    ("SSR Name", NAMEOF('Suncare Coverage Planning'[SSR Name]), 50),
+				    ("Suncare - Total BDF YTD Rank", NAMEOF('Key Measures'[Suncare - Total BDF YTD Rank]), 51),
+				    ("TTL L13W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 52),
+				    ("TTL L13W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 53),
+				    ("$ Change L13W", NAMEOF('Key Measures'[$ Change Weekly]), 54),
+				    ("% Change L13W", NAMEOF('Key Measures'[% Change Weekly]), 55),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 56),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 57),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 58),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 59),
+				
+				    -- 26 Weeks
+				    ("Address", NAMEOF('Suncare Coverage Planning'[Address]), 60),
+				    ("City", NAMEOF('Suncare Coverage Planning'[City]), 61),
+				    ("Zip", NAMEOF('Suncare Coverage Planning'[Zip]), 62),
+				    ("St", NAMEOF('Suncare Coverage Planning'[St]), 63),
+				    ("Division/Group", NAMEOF('Suncare Coverage Planning'[Division/Group]), 64),
+				    ("Region", NAMEOF('Suncare Coverage Planning'[Region]), 65),
+				    ("District", NAMEOF('Suncare Coverage Planning'[District]), 66),
+				    ("District Manager", NAMEOF('Suncare Coverage Planning'[District Manager]), 67),
+				    ("SMM", NAMEOF('Suncare Coverage Planning'[SMM]), 68),
+				    ("SSR", NAMEOF('Suncare Coverage Planning'[SSR]), 69),
+				    ("SSR Name", NAMEOF('Suncare Coverage Planning'[SSR Name]), 70),
+				    ("Suncare - Total BDF YTD Rank", NAMEOF('Key Measures'[Suncare - Total BDF YTD Rank]), 71),
+				    ("TTL L26W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 72),
+				    ("TTL L26W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 73),
+				    ("$ Change L26W", NAMEOF('Key Measures'[$ Change Weekly]), 74),
+				    ("% Change L26W", NAMEOF('Key Measures'[% Change Weekly]), 75),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 76),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 77),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 78),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 79),
+				
+				    -- 52 Weeks
+				    ("Address", NAMEOF('Suncare Coverage Planning'[Address]), 80),
+				    ("City", NAMEOF('Suncare Coverage Planning'[City]), 81),
+				    ("Zip", NAMEOF('Suncare Coverage Planning'[Zip]), 82),
+				    ("St", NAMEOF('Suncare Coverage Planning'[St]), 83),
+				    ("Division/Group", NAMEOF('Suncare Coverage Planning'[Division/Group]), 84),
+				    ("Region", NAMEOF('Suncare Coverage Planning'[Region]), 85),
+				    ("District", NAMEOF('Suncare Coverage Planning'[District]), 86),
+				    ("District Manager", NAMEOF('Suncare Coverage Planning'[District Manager]), 87),
+				    ("SMM", NAMEOF('Suncare Coverage Planning'[SMM]), 88),
+				    ("SSR", NAMEOF('Suncare Coverage Planning'[SSR]), 89),
+				    ("SSR Name", NAMEOF('Suncare Coverage Planning'[SSR Name]), 90),
+				    ("Suncare - Total BDF YTD Rank", NAMEOF('Key Measures'[Suncare - Total BDF YTD Rank]), 91),
+				    ("TTL L52W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 92),
+				    ("TTL L52W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 93),
+				    ("$ Change L52W", NAMEOF('Key Measures'[$ Change Weekly]), 94),
+				    ("% Change L52W", NAMEOF('Key Measures'[% Change Weekly]), 95),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 96),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 97),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 98),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 99)
+				
+				}
+
+	annotation PBI_Id = 0d5a726629af4bb59e0be658d53baa49
+

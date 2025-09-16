@@ -1,0 +1,133 @@
+table FactTable
+	lineageTag: dabd5441-bca0-4276-a4bc-36b3b049be8a
+
+	column Product
+		dataType: string
+		lineageTag: b09735c5-92cf-4405-89e4-b3b6a2c1f391
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column Store
+		dataType: double
+		formatString: 0
+		lineageTag: 3b8d634c-7656-425e-8d17-475ef6a513f6
+		summarizeBy: sum
+		sourceColumn: Store
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: de2ade07-5ceb-443d-901e-4ff13c762eb3
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Value
+		dataType: double
+		lineageTag: ffb55f09-2ff8-4c05-ad3f-ae9f526b3083
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Retailer
+		dataType: string
+		lineageTag: 51e21d38-db81-4663-b253-07221271e0ce
+		summarizeBy: none
+		sourceColumn: Retailer
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Store Name' = RELATED('Suncare Coverage Planning'[Store Name])
+		lineageTag: d67ba610-c9d0-4f44-8bf8-67e379af2734
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReatilerOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: 1e42964b-9b9a-4286-8e30-2c0269157886
+		summarizeBy: sum
+		sourceColumn: ReatilerOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	column JOINKEY
+		dataType: int64
+		formatString: 0
+		lineageTag: 12169fb0-32f3-4453-bff5-02d4e25e0f07
+		summarizeBy: none
+		sourceColumn: JOINKEY
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Coverage File Stores' = ```
+			
+			 VAR x=LOOKUPVALUE('Suncare Coverage Planning'[JoinKey],'Suncare Coverage Planning'[JoinKey],FactTable[JOINKEY])
+			 RETURN IF(ISBLANK(x), "Not Included", "Coverage File Stores")
+			```
+		lineageTag: e2d7edf0-22a8-4f94-9e09-efc5e3c94710
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Inserted_Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: fada5cbf-b0d5-4ddf-8679-3770d6a3332c
+		summarizeBy: none
+		sourceColumn: Inserted_Date
+
+		variation Variation
+			isDefault
+			relationship: f8c0eda3-e6f4-4eed-b206-08b9d0bd29c8
+			defaultHierarchy: LocalDateTable_d19e8352-091d-423c-b9f0-572a17df5c52.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column joinkey_test = LOOKUPVALUE('Suncare Coverage Planning'[JoinKey],'Suncare Coverage Planning'[JoinKey],FactTable[JOINKEY])
+		formatString: 0
+		lineageTag: 826689df-7dca-43b3-a101-5bf750b0e8e0
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactTable-986f296a-5f03-4aff-860c-85d4c53f3c05 = m
+		mode: import
+		queryGroup: Fact
+		source =
+				let
+				    Source = Table.Combine({Coppertone_CVS, Coppertone_Walgreens, Coppertone_Walmart, Eucerin_Walgreens, Eucerin_CVS, #"Coppertone Kroger",#"Coppertone_Target",#"Eucerin_Target", #"Eucerin Kroger", Eucerin_Walmart}),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Store", type number}, {"Date", type date}}),  // Ensure Date is of type date
+				    #"Merged Queries" = Table.NestedJoin(#"Changed Type", {"Retailer"}, RetailerOrder, {"Retailer"}, "RetailerOrder", JoinKind.LeftOuter),
+				    #"Expanded RetailerOrder" = Table.ExpandTableColumn(#"Merged Queries", "RetailerOrder", {"ReatilerOrder"}, {"ReatilerOrder"}),
+				    #"Duplicated Column" = Table.DuplicateColumn(#"Expanded RetailerOrder", "Store", "Store - Copy"),
+				    #"Split Column by Delimiter" = Table.SplitColumn(Table.TransformColumnTypes(#"Duplicated Column", {{"Store - Copy", type text}}, "en-IN"), "Store - Copy", Splitter.SplitTextByEachDelimiter({"."}, QuoteStyle.Csv, false), {"Store - Copy.1", "Store - Copy.2"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"Store - Copy.1", Int64.Type}, {"Store - Copy.2", Int64.Type}}),
+				    #"Merged Columns" = Table.CombineColumns(Table.TransformColumnTypes(#"Changed Type1", {{"Store - Copy.1", type text}, {"Store - Copy.2", type text}}, "en-IN"),{"Store - Copy.1", "Store - Copy.2"},Combiner.CombineTextByDelimiter("", QuoteStyle.None),"Store.1"),
+				    #"Inserted Merged Column" = Table.AddColumn(#"Merged Columns", "JOINKEY", each Text.Combine({[Store.1], Text.From([ReatilerOrder], "en-IN")}, ""), type text),
+				    #"Removed Columns" = Table.RemoveColumns(#"Inserted Merged Column",{"Store.1"}),
+				
+				    // **Filter out rows where the Date is before 2023**
+				    #"Filtered Rows" = Table.SelectRows(#"Removed Columns", each ([Product] <> null) and ([Date] >= #date(2023,1,1)))
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_ResultType = Exception
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,92 @@
+table 'Dynamic X-Axis by Parameter'
+	lineageTag: 4c749047-588c-4620-b523-0906f9d7f569
+
+	measure 'Dynamic axis Text' = ```
+			
+			SELECTEDVALUE('Selection Column Y-Axis'[Metrics]) & "  by  " &  SELECTEDVALUE('Dynamic X-Axis by Parameter'[Metrics])
+			
+			```
+		lineageTag: a48a84f6-869a-43ff-9986-76f81d9e850c
+
+	measure 'Dynamic axis Text_2' =
+			
+			SELECTEDVALUE('SSR Performance Metrics'[Metrics For WaterFall Text]) & "  by  " &  SELECTEDVALUE('Dynamic X-Axis by Parameter'[Metrics])
+		lineageTag: 16337c7a-1fdf-4d51-99bf-b3a33fecfcf2
+
+	column 'Dynamic X-Axis by Parameter'
+		lineageTag: ef07d225-d21a-441f-91c8-8f7151e19ec5
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Dynamic X-Axis by Parameter Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Dynamic X-Axis by Parameter Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dynamic X-Axis by Parameter Fields'
+		isHidden
+		lineageTag: 11a924e2-cfec-45bb-a47b-97c781804dca
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Dynamic X-Axis by Parameter Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dynamic X-Axis by Parameter Order'
+		isHidden
+		formatString: 0
+		lineageTag: 2c8c75d1-32ec-40b2-a1dd-163cab875fbb
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metrics =
+			
+			
+			SWITCH('Dynamic X-Axis by Parameter'[Dynamic X-Axis by Parameter],
+			
+			"City","City",
+			
+			"State","State",
+			"Division/Group","Division",
+			"BDF Region","BDF Region",
+			"Region","Region",
+			"District","District",
+			"District Manager","District Manager",
+			"SMM","SMM",
+			"SSR","SSR",
+			"SSR Name","SSR Name",
+			"Store","Store",
+			"Store Name","Store Name")
+		lineageTag: 1085d16d-b44e-404d-8e0a-c791ae9b3443
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dynamic X-Axis by Parameter-2f217222-2079-4b8c-a1f2-29016f339cd0' = calculated
+		mode: import
+		source =
+				{
+				    ("BCC Region", NAMEOF('Suncare Coverage Planning'[BDF Region]), 7),
+				    ("City", NAMEOF('Suncare Coverage Planning'[City]), 4),
+				    ("District", NAMEOF('Suncare Coverage Planning'[District]), 8),
+				    ("District Manager", NAMEOF('Suncare Coverage Planning'[District Manager]), 9),
+				    ("Division/Group", NAMEOF('Suncare Coverage Planning'[Division/Group]), 6),
+				    ("SMM", NAMEOF('Suncare Coverage Planning'[SMM]), 1),
+				    ("SSR", NAMEOF('Suncare Coverage Planning'[SSR]), 2),
+				    ("SSR Name", NAMEOF('Suncare Coverage Planning'[SSR Name]), 3),
+				    ("State", NAMEOF('Suncare Coverage Planning'[St]), 5),
+				    ("Store Name", NAMEOF('Suncare Coverage Planning'[Store Name]), 11),
+				    ("Store", NAMEOF('FactTable'[Store]), 10)
+				}
+
+	annotation PBI_Id = c1ab511c474d47e79fa296dcc945a33b
+

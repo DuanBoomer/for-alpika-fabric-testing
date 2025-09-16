@@ -1,0 +1,102 @@
+relationship 9068a5b4-2287-4594-87ee-175719204f47
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Date.'Week ending'
+	toColumn: LocalDateTable_feb02f90-629f-4ced-87ab-72c69cbabb66.Date
+
+relationship 7dbb95a3-1c5d-4502-99fa-634b99d6da41
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Date.Date
+	toColumn: LocalDateTable_89e7e791-0090-4448-863d-a0b9b49fdd30.Date
+
+relationship ca5cc3a6-921d-48c6-bd1d-930b1c7f5708
+	fromColumn: FactTable.Date
+	toColumn: Date.Date
+
+relationship 245e514b-0b04-4720-a104-5b74621775b6
+	fromColumn: FactTable.Retailer
+	toColumn: 'Retailer Image'.Retailers
+
+relationship 2a0a56da-a740-40ef-bb42-9319d7ff932d
+	fromColumn: 'SSR Performance Metrics'.Metrics
+	toColumn: 'SupportTable_SortMetrics_SSR Performance'.Metrics
+
+relationship 55dca9fb-e041-4922-87d0-79ba7ff449de
+	fromColumn: 'Store Performance Metrics'.Metrics
+	toColumn: 'SupportTable_SortMetrics_Store Performance'.Metrics
+
+relationship 92517c95-c955-43bc-9fd9-de1856ba8312
+	fromColumn: YTD.'YTD Order'
+	toColumn: 'Selection Column Y-Axis'.'Selection Column Y-Axis Order'
+
+relationship b0911c83-213a-4d71-b8a6-c0b81fe94547
+	fromColumn: '% Change'.'% Change Order'
+	toColumn: 'Selection Column Y-Axis'.'Selection Column Y-Axis Order'
+
+relationship 1b70bd4a-203e-4b03-bc4c-6ddf4441e2ea
+	fromColumn: MTD.'MTD Order'
+	toColumn: 'Selection Column Y-Axis'.'Selection Column Y-Axis Order'
+
+relationship 54b7231d-f7a6-49e4-9a2c-ce2a68c0389a
+	fromColumn: Fact_Coppertone_CVS_Category_POS.Date
+	toColumn: Date.Date
+
+relationship 1c61d270-5a76-4dfd-9abc-9cf926201814
+	fromColumn: 'Store Performance Metrics (CVS Cat)'.Metrics_Slicer
+	toColumn: 'SupportTable_SortMetrics_Store Performance'.Metrics
+
+relationship 8a47dc29-c9a2-43bf-a9d1-c77d2f8d085f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Last Refresh Time'.'Last Refresh Time'
+	toColumn: LocalDateTable_683a7774-c088-4f75-8188-9cc36ac5864d.Date
+
+relationship ed8ab960-dc73-44a4-83a5-feb61841404b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Coppertone_CVS_Category_POS.Inserted_Date
+	toColumn: LocalDateTable_e16ed1d8-fe26-430b-be07-ef1852b2f678.Date
+
+relationship 2646d7c9-47cb-0a54-c407-379bc9981c21
+	fromColumn: FactTable.JOINKEY
+	toColumn: 'Suncare Coverage Planning'.JoinKey
+
+relationship 0c5a99eb-dc58-57e9-8e62-e70572cf2c59
+	crossFilteringBehavior: bothDirections
+	fromColumn: FactTable.Product
+	toColumn: 'Product Image'.Product
+
+relationship ca6b7e98-007f-4069-9eef-1861da64bd5d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Date.WeekEndingDate
+	toColumn: LocalDateTable_12319125-0322-4648-9923-1faa118d85e9.Date
+
+relationship f8c0eda3-e6f4-4eed-b206-08b9d0bd29c8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: FactTable.Inserted_Date
+	toColumn: LocalDateTable_d19e8352-091d-423c-b9f0-572a17df5c52.Date
+
+relationship 7a16f2ff-b5a9-1944-09d4-6b6040abdc61
+	fromColumn: Weeks_Param.'Window Key'
+	toColumn: 'Week Table'.sort
+
+relationship 98c296d7-e499-6932-a147-b76b75ca734e
+	toCardinality: many
+	fromColumn: 'SSR Performance Metrics'.Metrics
+	toColumn: Weeks_Param.Metrics
+
+relationship 08f5514b-4330-334a-6746-f28ead42da03
+	fromColumn: 'week param all store big'.'Window Key'
+	toColumn: 'Week Table'.sort
+
+relationship fba0518b-9271-3d64-883a-42792a422321
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'week param all store small'.'Window Key'
+	toColumn: 'Week Table'.sort
+
+relationship 0c321c68-3529-5195-a444-b3f793713396
+	crossFilteringBehavior: bothDirections
+	fromColumn: Division_Performance.'Window Key'
+	toColumn: 'Week Table'.sort
+
+relationship 939b4662-3319-8476-7d22-1233931bd83f
+	fromColumn: Yearly_Weekly_%Change_Selection.'Window Key'
+	toColumn: 'Week Table'.sort
+

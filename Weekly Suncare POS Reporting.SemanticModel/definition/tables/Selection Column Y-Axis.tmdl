@@ -1,0 +1,70 @@
+table 'Selection Column Y-Axis'
+	lineageTag: 09a90091-03a3-4f32-bea1-3d21bdb70f39
+
+	column 'Selection Column Y-Axis'
+		lineageTag: db3efba6-55b7-4ce9-84fc-f9b24bfcb1ad
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Selection Column Y-Axis Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Selection Column Y-Axis Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Selection Column Y-Axis Fields'
+		isHidden
+		lineageTag: c446fe37-046f-42cc-bbbb-20b7abbd07e2
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Selection Column Y-Axis Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Selection Column Y-Axis Order'
+		isHidden
+		formatString: 0
+		lineageTag: 18069c73-e803-4eac-b602-08b0cf9f7d29
+		summarizeBy: none
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metrics = ```
+			
+			
+			SWITCH('Selection Column Y-Axis'[Selection Column Y-Axis],
+			
+			" MTD "," MTD",
+			" MTD "," MTD ",
+			"MTD"," MTD ",
+			"MTD"," MTD ",
+			"YTD"," YTD ",
+			"YTD"," YTD ",
+			"YTD"," YTD ",
+			"YTD"," YTD ")
+			
+			
+			
+			```
+		lineageTag: 2bbb191c-0da1-47ee-99fb-827bc090ed9c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Selection Column Y-Axis-d3c4f42e-9aba-43ed-8355-a250c9b0877d' = calculated
+		mode: import
+		source =
+				{
+				    ("MTD", NAMEOF('MTD'[MTD]), 0),
+				    ("YTD", NAMEOF('YTD'[YTD]), 1)
+				}
+
+	annotation PBI_Id = 1973b6a91df14b0888837d9c1ea7dff0
+

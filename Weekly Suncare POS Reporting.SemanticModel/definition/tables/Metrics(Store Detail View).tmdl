@@ -1,0 +1,60 @@
+table 'Metrics(Store Detail View)'
+	lineageTag: 5d740bcf-4ec0-4f08-8ca2-ba875dc0a741
+
+	column Metrics(SDV)
+		lineageTag: 974e541e-956d-4785-be71-169e9cfb3f66
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Metrics(SDV) Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Metrics(SDV) Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Metrics(SDV) Fields'
+		isHidden
+		lineageTag: 84ca0dcb-c2a6-4d7b-a801-98a6787593eb
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Metrics(SDV) Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Metrics(SDV) Order'
+		isHidden
+		formatString: 0
+		lineageTag: 00648124-dd67-4fb2-9d1d-9876a6fa623c
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Metrics(Store Detail View)-34c5a0c3-c66f-4122-9309-2f22deab4c86' = calculated
+		mode: import
+		source =
+				{
+				    ("SMM", NAMEOF('Suncare Coverage Planning'[SMM]), 0),
+				   -- ("Manager Name", NAMEOF('2022 Suncare Coverage Planning'[District Manager]), 1),
+				    ("SSR Name", NAMEOF('Suncare Coverage Planning'[SSR Name]), 2),
+				    ("SSR Territory", NAMEOF('Suncare Coverage Planning'[SSR]), 3),
+				    ("Retailer", NAMEOF('FactTable'[Retailer]), 4),
+				    ("Store #", NAMEOF('Suncare Coverage Planning'[Store Num_1]), 5),
+				    ("Address", NAMEOF('Suncare Coverage Planning'[Address]), 6),
+				    ("City", NAMEOF('Suncare Coverage Planning'[City]), 7),
+				    ("St", NAMEOF('Suncare Coverage Planning'[St]), 8),
+				    ("Zip", NAMEOF('Suncare Coverage Planning'[Zip]), 9),
+				 ("Market", NAMEOF('Suncare Coverage Planning'[IRI Market]), 10)}
+				  /*  ("Last N Months", NAMEOF('Last N Week'[Last N week]), 11),
+				    ("Prior N Months", NAMEOF([prior N week]), 12),
+				    ("% Change", NAMEOF('Last N Week'[% Change]), 13)
+				} */
+
+	annotation PBI_Id = 996f860a1f6f4a498055d47f90ab7b70
+

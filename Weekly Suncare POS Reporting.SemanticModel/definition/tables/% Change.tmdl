@@ -1,0 +1,67 @@
+table '% Change'
+	lineageTag: d06e9d58-6b91-4c8b-9109-a65b3dad217a
+
+	measure 'District Performance Column Chart Title' = SELECTEDVALUE('Yearly_Weekly_%Change_Selection'[Metrics]) & " Sales by Store"
+		lineageTag: 2982d975-c611-45b3-ab17-8e3df6cec9f9
+
+	measure '% Change (Summary by Retailer & SSR)' =
+			
+			VAR x= [Last N Months]
+			var y=[Prior N Months]
+			VAR Change =DIVIDE((x- y),y)
+			return Change
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 8b2ee754-931e-4590-82fe-24502c227dea
+
+		changedProperty = FormatString
+
+	measure Total_Sales = SUM(FactTable[Value])
+		lineageTag: 07c46001-4017-42e7-ac2d-7928f0daa39d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column '% Change'
+		lineageTag: 7f56fddd-22cf-47c4-9a14-dbaa06057687
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: '% Change Order'
+
+		relatedColumnDetails
+			groupByColumn: '% Change Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column '% Change Fields'
+		isHidden
+		lineageTag: fec84fc9-55f6-4bdc-875d-2632884cdc7e
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: '% Change Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column '% Change Order'
+		isHidden
+		formatString: 0
+		lineageTag: af1f6d1f-6098-45c1-ba53-d8e27ab3ba99
+		summarizeBy: none
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '% Change-c1a7c033-5016-4fd2-b373-548d5f39717c' = calculated
+		mode: import
+		source =
+				{
+				    ("% Change MTD", NAMEOF('Key Measures'[% Change Weekly]), 0),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 1)
+				}
+
+	annotation PBI_Id = e3188518e9f84b1784188001fa3d6206
+

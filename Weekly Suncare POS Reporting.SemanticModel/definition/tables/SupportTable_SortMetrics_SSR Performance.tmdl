@@ -1,0 +1,31 @@
+table 'SupportTable_SortMetrics_SSR Performance'
+	lineageTag: 605eac96-3b95-41b9-a166-dd1b37630934
+
+	column Metrics
+		dataType: string
+		lineageTag: 74bb75cb-f487-4347-8665-7b3cfc53670f
+		summarizeBy: none
+		sourceColumn: Metrics
+
+		annotation SummarizationSetBy = Automatic
+
+	column SelectMetricsSort
+		dataType: int64
+		formatString: 0
+		lineageTag: 46c67e66-82a6-4d23-a015-d56e86985a41
+		summarizeBy: none
+		sourceColumn: SelectMetricsSort
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'SupportTable_SortMetrics_SSR Performance-ba28adbf-3869-4e42-a18a-c22488edc6cd' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WCg4OUvBLzE1V0lEyUIrViVaKDHFRUFVwzkhXCErMywYKG4KFg0vyi1IVnPNL80qAYkZgMd8QFyDbGKYNyDZRio0FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Metrics = _t, SelectMetricsSort = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Metrics", type text}, {"SelectMetricsSort", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

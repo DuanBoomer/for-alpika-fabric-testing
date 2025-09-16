@@ -1,0 +1,161 @@
+table Weeks_Param
+	lineageTag: 91c24a83-dea0-4cbe-ac64-411e4940b309
+
+	column 'week Param'
+		lineageTag: 049a9ac1-a854-4cec-9e06-4b08f9ec418d
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'week Param Order'
+
+		relatedColumnDetails
+			groupByColumn: 'week Param Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'week Param Fields'
+		isHidden
+		lineageTag: afdfc4cf-cdc9-456e-bf59-8abe5f3016c6
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'week Param Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'week Param Order'
+		isHidden
+		formatString: 0
+		lineageTag: 9d1b0aea-7c00-40d3-905d-96d5cd6c8dfe
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Window Key' = ```
+			
+			
+			SWITCH(
+			
+			    TRUE(),
+			
+			    [week param Order] IN {1,2,3,4,5,6,7,8,9,10,11}, 1,
+			
+			    [week param Order] IN {12,13,14,15,16,17,18,19,20,21,22}, 2,
+			
+			    [week param Order] IN {23,24,25,26,27,28,29,30,31,32,33}, 3,
+			
+			    [week param Order] IN {34,35,36,37,38,39,40,41,42,43,44}, 4,
+			
+			    [week param Order] IN {45,46,47,48,49,50,51,52,53,54,55}, 6,
+			
+			    BLANK()
+			
+			)
+			
+			 
+			```
+		formatString: 0
+		lineageTag: fbfd811a-2679-47bd-88ec-fe973ab5b395
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metrics = ```
+			
+			SWITCH(
+			    'Weeks_Param'[week Param],
+			    "SSR Name", "SSR Name",
+			    "YTD % Chg Rank", "YTD % Chg Rank",
+			    "Store Count", "Store Count",
+			    "TTL YTD Sales TY", "YTD",
+			    "TTL YTD sales LY", "YTD",
+			    "$ Change YTD", "YTD",
+			    "% Change YTD", "YTD",
+			    "Weekly"  -- Default value (like ELSE)
+			)
+			
+			```
+		lineageTag: 37fef267-3e5a-4c33-80d2-d518f5868b13
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Weeks_Param = calculated
+		mode: import
+		source = ```
+				{
+				    -- 1 Week
+				    ("SSR Name", NAMEOF('Key Measures'[SSR Name]), 1),
+				    ("YTD % Chg Rank", NAMEOF('Key Measures'[YTD % Chg Rank]), 2),
+				    ("Store Count", NAMEOF('Key Measures'[Store Count]), 3),
+				    ("TTL L1W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 4),
+				    ("TTL L1W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 5),
+				    ("$ Change L1W", NAMEOF('Key Measures'[$ Change Weekly]), 6),
+				    ("% Change L1W", NAMEOF('Key Measures'[% Change Weekly]), 7),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 8),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 9),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 10),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 11),
+				
+				    -- 4 Weeks
+				    ("SSR Name", NAMEOF('Key Measures'[SSR Name]), 12),
+				    ("YTD % Chg Rank", NAMEOF('Key Measures'[YTD % Chg Rank]), 13),
+				    ("Store Count", NAMEOF('Key Measures'[Store Count]), 14),
+				    ("TTL L4W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 15),
+				    ("TTL L4W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 16),
+				    ("$ Change L4W", NAMEOF('Key Measures'[$ Change Weekly]), 17),
+				    ("% Change L4W", NAMEOF('Key Measures'[% Change Weekly]), 18),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 19),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 20),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 21),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 22),
+				
+				    -- 13 Weeks
+				    ("SSR Name", NAMEOF('Key Measures'[SSR Name]), 23),
+				    ("YTD % Chg Rank", NAMEOF('Key Measures'[YTD % Chg Rank]), 24),
+				    ("Store Count", NAMEOF('Key Measures'[Store Count]), 25),
+				    ("TTL L13W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 26),
+				    ("TTL L13W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 27),
+				    ("$ Change L13W", NAMEOF('Key Measures'[$ Change Weekly]), 28),
+				    ("% Change L13W", NAMEOF('Key Measures'[% Change Weekly]), 29),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 30),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 31),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 32),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 33),
+				
+				    -- 26 Weeks
+				    ("SSR Name", NAMEOF('Key Measures'[SSR Name]), 34),
+				    ("YTD % Chg Rank", NAMEOF('Key Measures'[YTD % Chg Rank]), 35),
+				    ("Store Count", NAMEOF('Key Measures'[Store Count]), 36),
+				    ("TTL L26W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 37),
+				    ("TTL L26W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 38),
+				    ("$ Change L26W", NAMEOF('Key Measures'[$ Change Weekly]), 39),
+				    ("% Change L26W", NAMEOF('Key Measures'[% Change Weekly]), 40),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 41),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 42),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 43),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 44),
+				
+				    -- 52 Weeks
+				    ("SSR Name", NAMEOF('Key Measures'[SSR Name]), 45),
+				    ("YTD % Chg Rank", NAMEOF('Key Measures'[YTD % Chg Rank]), 46),
+				    ("Store Count", NAMEOF('Key Measures'[Store Count]), 47),
+				    ("TTL L52W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 48),
+				    ("TTL L52W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 49),
+				    ("$ Change L52W", NAMEOF('Key Measures'[$ Change Weekly]), 50),
+				    ("% Change L52W", NAMEOF('Key Measures'[% Change Weekly]), 51),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 52),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 53),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 54),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 55)
+				}
+				
+				```
+
+	annotation PBI_Id = 80fbfc26f674415989a14db83c0cfda2
+

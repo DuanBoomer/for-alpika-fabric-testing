@@ -1,0 +1,202 @@
+table Date
+	lineageTag: 6535281a-73a9-418e-85a2-e02a0193a9ae
+
+	column Date
+		formatString: dd-mm-yyyy
+		lineageTag: 4a3b6bed-a9e8-48f3-bffc-bbc8ab560b17
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 7dbb95a3-1c5d-4502-99fa-634b99d6da41
+			defaultHierarchy: LocalDateTable_89e7e791-0090-4448-863d-a0b9b49fdd30.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Month = MONTH('Date'[Date])
+		formatString: 0
+		lineageTag: 7922e840-c9e8-45ea-a458-ca1e9169fab2
+		summarizeBy: none
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column Year = YEAR('Date'[Date])
+		formatString: 0
+		lineageTag: 13a4961a-6643-43d0-b334-ed1c52ff17e5
+		summarizeBy: none
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column Week =
+			
+			// VAR CurrentYear = YEAR('Date'[Date])
+			// VAR IsLeapYear = 'Date'[IsLeapYear]  -- Using the calculated Leap Year column
+			// VAR FirstSaturday = CALCULATE(MIN('Date'[Date]), YEAR('Date'[Date]) = CurrentYear, WEEKDAY('Date'[Date], 1) = 7)
+			// VAR CurrentWeekNum = DATEDIFF(FirstSaturday, 'Date'[Date], WEEK) + 1
+			// VAR MaxWeeks = IF(IsLeapYear = TRUE(), 53, 52)  -- Limit weeks to 53 if leap year, else 52
+			// RETURN IF(CurrentWeekNum > MaxWeeks, MaxWeeks, CurrentWeekNum)
+			IF(WEEKDAY(DATE(YEAR('Date'[Date]), 1, 1)) = 7, WEEKNUM('Date'[Date])-1,WEEKNUM('Date'[Date]))
+		formatString: 0
+		lineageTag: 43c80e3c-1fea-4dab-aba4-14ee72880d09
+		summarizeBy: none
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column WeekDay = FORMAT('Date'[Date],"dddd")
+		lineageTag: 38c3d32a-aea0-466c-9d95-3a0c437af26c
+		summarizeBy: none
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week ending' = 'Date'[Date]+(7-'Date'[weekday number])
+		formatString: Short Date
+		lineageTag: 3f079586-69a7-407d-a71a-fa95b5f480e9
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 9068a5b4-2287-4594-87ee-175719204f47
+			defaultHierarchy: LocalDateTable_feb02f90-629f-4ced-87ab-72c69cbabb66.'Date Hierarchy'
+
+		changedProperty = FormatString
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'weekday number' =
+			
+			WEEKDAY('Date'[Date],1)
+		formatString: 0
+		lineageTag: c56b3e78-68d3-4e24-80d6-a056b271de02
+		summarizeBy: none
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Month Year_' = FORMAT('Date'[Date],"mmm ")&YEAR('Date'[Date])
+		lineageTag: 69b0dd2b-e9ad-4ad1-98aa-f46917223093
+		summarizeBy: none
+		sortByColumn: 'Date key'
+
+		changedProperty = SortByColumn
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Date key' = year('Date'[Date])*10000+MONTH('Date'[Date])*100
+		formatString: 0
+		lineageTag: fd28664c-4e54-4ebc-9ac3-855d3f005b20
+		summarizeBy: sum
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Year' =
+			
+			IF( FORMAT(MAXX(ALL('Date'),'Date'[Date]),"MMM YYYY")='Date'[Month Year_],"Latest ",'Date'[Month Year_])
+		lineageTag: 0189b55b-c01f-41cd-8d4a-33d6be067ef4
+		summarizeBy: none
+		sortByColumn: 'Date key'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week No With Date' = "WK " & 'Date'[Week] & ", " &FORMAT([Week ending],"MM-dd-yyyy")
+		lineageTag: ffc4aa9c-e178-4f70-8f46-b43f95537112
+		summarizeBy: none
+		sortByColumn: 'Week ending'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter = if('Date'[Month]<4,"QTR 1",if('Date'[Month]<7,"QTR 2",if('Date'[Month]<10,"QTR 3","QTR 4")))
+		lineageTag: 48cda20b-daa6-4f1e-90a0-055ca7d38a1e
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week No.' = CONCATENATE('Date'[Week],CONCATENATE(" ","Week"))
+		lineageTag: 61cbab86-8172-425a-8ed2-096c6db78fd8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsLeapYear = ```
+			
+			VAR CurrentYear = YEAR('Date'[Date])
+			RETURN IF(
+			    MOD(CurrentYear, 4) = 0 && (MOD(CurrentYear, 100) <> 0 || MOD(CurrentYear, 400) = 0), 
+			    TRUE(), 
+			    FALSE()
+			)
+			
+			```
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 6c9c8de6-0772-489d-8082-7eb35fa563cb
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeekEndingDate =
+			
+			VAR CurrentDate = 'Date'[Date]
+			VAR WeekdayNum = 'Date'[weekday number]
+			VAR YearNum = YEAR(CurrentDate)
+			VAR NormalWeekEnding = CurrentDate + (7 - WeekdayNum)
+			
+			VAR MaxWeek52Date =
+			    CALCULATE(
+			        MAX('Date'[Date]),
+			        'Date'[Week] = 52,
+			        YEAR('Date'[Date]) = YearNum - 1
+			    )
+			
+			RETURN
+			IF(
+			    'Date'[Week] = 52 && WeekdayNum <> 7,
+			    MaxWeek52Date,
+			    NormalWeekEnding
+			)
+		formatString: General Date
+		lineageTag: 56b11613-bbf3-40b1-8386-0bab6d1cfed0
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: ca6b7e98-007f-4069-9eef-1861da64bd5d
+			defaultHierarchy: LocalDateTable_12319125-0322-4648-9923-1faa118d85e9.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Date-6c7a44b1-3bbb-4c7f-a2bf-b7a6147b921f = calculated
+		mode: import
+		source = CALENDAR(MIN(FactTable[Date]),MAX(FactTable[Date]))
+
+	changedProperty = IsHidden
+
+	annotation PBI_Id = 948a6700f0274d43a58e775149c4995f
+

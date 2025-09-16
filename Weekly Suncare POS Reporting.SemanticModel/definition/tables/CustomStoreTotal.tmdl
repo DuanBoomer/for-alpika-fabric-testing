@@ -1,0 +1,34 @@
+table CustomStoreTotal
+	lineageTag: 31323f57-a82b-441f-98a5-7d26b7b1d66e
+
+	column CustomTotal
+		dataType: string
+		lineageTag: b9179d78-19c9-4de0-8852-bdf7c8abcb53
+		summarizeBy: none
+		sourceColumn: CustomTotal
+		sortByColumn: Sort
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sort
+		dataType: int64
+		formatString: 0
+		lineageTag: 2c2e14a3-d0b4-40ce-9cbf-140b5fe54353
+		summarizeBy: sum
+		sourceColumn: Sort
+
+		annotation SummarizationSetBy = Automatic
+
+	partition CustomStoreTotal-454170c6-e6d1-4ce6-afc2-8dd4c530a267 = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WcszJUQguyS9KLVbSUTJUitWJVnLLzClJLUpNQYgbKcXGAgA=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [CustomTotal = _t, Sort = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"CustomTotal", type text}, {"Sort", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

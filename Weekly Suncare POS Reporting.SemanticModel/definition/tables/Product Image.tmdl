@@ -1,0 +1,37 @@
+table 'Product Image'
+	lineageTag: daee11e4-5d30-401d-9c8f-fcae9621cf3d
+
+	measure 'Measure 2' =
+			if(
+			HASONEVALUE('Product Image'[Web URL]), VALUES('Product Image'[Web URL])
+			)
+		lineageTag: ac5d9782-0f03-48b2-8856-9b373ea67df9
+
+	column Product
+		dataType: string
+		lineageTag: b16cbd65-8f2a-4f27-be27-f0fd7d287723
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Web URL'
+		dataType: string
+		lineageTag: 3d53e44c-d990-4e4f-8f40-c0b7b116471f
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: Web URL
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Product Image-e6a7ab14-2a64-416c-a2f6-2d6ce5bb1f43' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("TcxBC4IwGIDhvxI7O7/PjSK7yg5BTLE8DQ9jDhN0G26SP7+oS7f38j5KkapuGtE+ailIRp4phXgBmP3oh2nPjV++DUXJjsjLPLiR9JkioqtEe5WHeyf/tgIRF70aHXNnE7wCNd4l6xJsYfZ6iMCQISADsRm7To7ePjg9Ie6cn394/wY=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Product = _t, #"Web URL" = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Product", type text}, {"Web URL", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

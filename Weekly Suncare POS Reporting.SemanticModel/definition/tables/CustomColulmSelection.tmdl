@@ -1,0 +1,55 @@
+table CustomColulmSelection
+	lineageTag: dc52a6cd-69a3-43f9-ae60-0543062364a4
+
+	column Choose
+		dataType: string
+		lineageTag: 1cb1df57-c230-4e5c-be1b-997f2343753a
+		summarizeBy: none
+		sourceColumn: Choose
+
+		annotation SummarizationSetBy = Automatic
+
+	column Index
+		dataType: double
+		lineageTag: 30001f86-3389-4899-94b6-5273fe48b0ff
+		summarizeBy: sum
+		sourceColumn: Index
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Select
+		dataType: string
+		lineageTag: 351716ff-0842-4c77-8a83-1a6358954dd0
+		summarizeBy: none
+		sourceColumn: Select
+
+		annotation SummarizationSetBy = Automatic
+
+	partition CustomColulmSelection-88b8ae4f-cb79-4c26-8779-5fe7f893829b = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("bYw9C4MwEED/ynHUzaHWfs5xNEtzSwgZMgRbWiJEHfz3PW8oBFzfezzn0GgNFHN+z2NescYGfe3QUleBeg3wDOnD9CTUcBNBjUuambXCiHrQ1IEJ3zgBWRbnHdFv4iLiwOOQhrhZhleBVQlv/4Ut3/cdIe9H+bayaY7o/Q8=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Choose = _t, Index = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Choose", type text}, {"Index", Int64.Type}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","SMM Territory","% Change YTD",Replacer.ReplaceText,{"Choose"}),
+				    #"Added Conditional Column" = Table.AddColumn(#"Replaced Value", "Select", each if [Choose] = "YTD% Chg Rank" then "YTD% Chg Rank" else if [Choose] = "Store Count" then "Store Count" else if [Choose] = "TTL MTD Sales TY" then "MTD" else if [Choose] = "TTL MTD Sales LY" then "MTD" else if [Choose] = "$ Change MTD" then "MTD" else if [Choose] = "% Change MTD" then "MTD" else if [Choose] = "TTL YTD Sales TY" then "YTD " else if [Choose] = "TTL YTD Sales LY" then "YTD" else if [Choose] = "$ Change YTD" then "YTD " else if [Choose] = "% Change YTD" then "YTD " else null),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Added Conditional Column","YTD% Chg Rank","YTD % Chg Rank",Replacer.ReplaceText,{"Choose"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","YTD% Chg Rank","YTD % Chg Rank",Replacer.ReplaceText,{"Select"}),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2",2,11,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3",3,2,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4",4,3,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5",5,4,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6",6,5,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value8" = Table.ReplaceValue(#"Replaced Value7",7,6,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value9" = Table.ReplaceValue(#"Replaced Value8",8,7,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value10" = Table.ReplaceValue(#"Replaced Value9",9,8,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value11" = Table.ReplaceValue(#"Replaced Value10",10,9,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value12" = Table.ReplaceValue(#"Replaced Value11",1,10,Replacer.ReplaceValue,{"Index"}),
+				    #"Replaced Value13" = Table.ReplaceValue(#"Replaced Value12",11,1,Replacer.ReplaceValue,{"Index"})
+				in
+				    #"Replaced Value13"
+
+	annotation PBI_ResultType = Table
+

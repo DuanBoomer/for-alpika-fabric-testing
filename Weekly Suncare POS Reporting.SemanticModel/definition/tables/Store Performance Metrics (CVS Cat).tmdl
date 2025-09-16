@@ -1,0 +1,105 @@
+table 'Store Performance Metrics (CVS Cat)'
+	lineageTag: fb917a63-de39-480a-9cc7-386bb2f44483
+
+	column Metrics
+		lineageTag: 7173b8e0-7728-4605-9ae5-95214108ca60
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parameter Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Parameter Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Fields'
+		isHidden
+		lineageTag: 84d2d20e-038a-49e3-96e8-8bd8bd5577fe
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parameter Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Order'
+		isHidden
+		formatString: 0
+		lineageTag: 255e87b6-471b-4976-859e-686f9b0d10e3
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metrics_Slicer =
+			
+			
+			SWITCH('Store Performance Metrics (CVS Cat)'[Metrics],
+			"Address","Address",
+			"City","City",
+			"Zip","Zip",
+			"St","State",
+			"Division/Group","Division",
+			"Region","Region",
+			"District","District",
+			"District Manager","District Manager",
+			"SMM","SMM",
+			"SSR","SSR",
+			"SSR Name","SSR Name",
+			"Suncare - Total BDF YTD Rank","Suncare - Total BDF YTD Rank",
+			"TTL MTD Sales TY","MTD",
+			"TTL MTD sales LY","MTD",
+			"$ Change MTD","MTD",
+			"% Change MTD","MTD",
+			"TTL YTD Sales TY","YTD",
+			"TTL YTD sales LY","YTD",
+			"$ Change YTD","YTD",
+			"% Change YTD","YTD")
+		lineageTag: a1b573eb-73d8-40f1-8829-e5e60aba8b68
+		summarizeBy: none
+		sortByColumn: SortMetrics
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column SortMetrics = RELATED('SupportTable_SortMetrics_Store Performance'[SortMetrics])
+		formatString: 0
+		lineageTag: 1c7981ca-c2f8-4538-9b5b-2eab9a357ee2
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Store Performance Metrics (CVS Cat)-e3950b23-ab3e-4714-941f-e3ef1f602102' = calculated
+		mode: import
+		source =
+				{
+				    ("Address", NAMEOF('Suncare Coverage Planning'[Address]), 0),
+				    ("City", NAMEOF('Suncare Coverage Planning'[City]), 1),
+				    ("Zip", NAMEOF('Suncare Coverage Planning'[Zip]), 2),
+				    ("St", NAMEOF('Suncare Coverage Planning'[St]), 3),
+				    ("Division/Group", NAMEOF('Suncare Coverage Planning'[Division/Group]), 4),
+				    ("Region", NAMEOF('Suncare Coverage Planning'[Region]), 5),
+				    ("District", NAMEOF('Suncare Coverage Planning'[District]), 6),
+				    ("District Manager", NAMEOF('Suncare Coverage Planning'[District Manager]), 7),
+				    ("SMM", NAMEOF('Suncare Coverage Planning'[SMM]), 8),
+				    ("SSR", NAMEOF('Suncare Coverage Planning'[SSR]), 9),
+				    ("SSR Name", NAMEOF('Suncare Coverage Planning'[SSR Name]), 10),
+				    ("Suncare - Total BDF YTD Rank", NAMEOF('Key Measures'[Suncare - Total BDF YTD Rank (CVS Cat)]), 11),
+				    ("TTL MTD Sales TY", NAMEOF('Key Measures'[TTL MTD Sales TY (CVS Cat)]), 12),
+				    ("TTL MTD sales LY", NAMEOF('Key Measures'[TTL MTD Sales LY (CVS Cat)]), 13),
+				    ("$ Change MTD", NAMEOF('Key Measures'[$ Change MTD (CVS Cat)]), 14),
+				    ("% Change MTD", NAMEOF('Key Measures'[% Change MTD (CVS Cat)]), 15),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY (CVS Cat)]), 16),
+				    ("TTL YTD sales LY", NAMEOF('Key Measures'[TTL YTD sales LY (CVS Cat)]), 17),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD (CVS Cat)]), 18),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD (CVS Cat)]), 19)
+				}
+
+	annotation PBI_Id = 511efbccda4c4118b7dd41a52af27bac
+

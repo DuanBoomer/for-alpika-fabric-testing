@@ -1,0 +1,114 @@
+table 'Last N Week'
+	lineageTag: 87b06f63-e6ac-4edb-8685-83431e7ea83e
+
+	measure 'Last N week' = ```
+			
+			VAR _Last_N_WEEK=[select N weeks]
+			VAR _endate= [Selected_Weeks]
+			VAR _startdate= _endate - (_Last_N_Week * 7)
+			VAR RESULT=CALCULATE(SUM(FactTable[Value]),FILTER(All('Date'),'Date'[Week ending]>=_startdate && 'Date'[Week ending]<=_endate))
+			RETURN IF([select N weeks]=9999,[TTL YTD Sales TY],RESULT)  
+			
+			```
+		lineageTag: 516da91c-92dc-49b2-935f-f99f36f0452a
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'prior N week' = ```
+			
+			 
+			VAR _Last_N_Weeks = [select N weeks] - 1
+			VAR _endDate = MAX('Date'[Date]) - 365  // Shift 1 year back
+			VAR _startDate = _endDate - (_Last_N_Weeks * 7) 
+			
+			VAR RESULT = 
+			    CALCULATE(
+			        SUM(FactTable[Value]), 
+			        FILTER(
+			            ALL('Date'), 
+			            'Date'[Date] >= _startDate && 'Date'[Date] <= _endDate
+			        )
+			    )
+			
+			RETURN 
+			    IF([select N weeks] = 9999, [TTL YTD Sales LY], RESULT)
+			
+			
+			```
+		lineageTag: a20b0bc1-59ee-49ad-8441-606329ff3c26
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'select N weeks' = MAX('Week Table'[Weeks])//SELECTEDVALUE('Week Table'[Weeks], 12)
+		formatString: 0
+		lineageTag: 70957dc5-4b36-412e-a7dc-099094052ff1
+
+	measure '% Change' = ```
+			
+			VAR x = [select N weeks]
+			VAR Change = abs(DIVIDE([TTL Weekly Sales TY], [TTL Weekly Sales LY])) - 1
+			RETURN 
+			    IF(Change = -1, BLANK(), Change)
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: bc6aebb9-6b3b-4053-b456-42d7268c28aa
+
+		changedProperty = FormatString
+
+	measure Selected_Weeks = MAX('Date'[Week ending])
+		formatString: General Date
+		lineageTag: 90bfc0c3-560c-4685-9370-64803463cf74
+
+	measure LastNSalesCompYr = ```
+			
+			VAR SelectedWeeks = SELECTEDVALUE('WeekParameter'[WeekParameter])  // Get the selected number of weeks from the parameter
+			VAR DaysToSubtract = SelectedWeeks * 7  // Convert weeks to days
+			VAR EndDate = LASTDATE('Date'[Date])  // Last date of the data
+			VAR StartDate = EndDate - DaysToSubtract  // Calculate the start date based on selected weeks
+			
+			RETURN 
+			    CALCULATE (
+			        [Total sales], 
+			        ALL('Date'), 
+			        'Date'[Date] >= StartDate, 
+			        'Date'[Date] <= EndDate
+			    )
+			
+			```
+		lineageTag: 3ac2dfc9-8256-4dc4-af40-d91e1322dd46
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Measure
+		lineageTag: f0671ce4-e660-4c56-958e-b3261c2a8c4d
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure '% Change test' = ```
+			
+			VAR x = [select N weeks]
+			VAR Change = DIVIDE([TTL Weekly Sales TY], [TTL Weekly Sales LY]) - 1
+			RETURN 
+			    IF(Change = -1, BLANK(), Change)
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 802dd398-2917-4ba2-9de8-ad40dc0fe67c
+
+	partition 'Last N Week-7eaee672-3612-41e6-944d-14d489bd1591' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,26 @@
+table 'Last N Months'
+	lineageTag: 45595042-61ae-4349-8054-6feb0487de4e
+
+	measure 'Last N Months Value' = SELECTEDVALUE('Last N Months'[Last N Months], 13)
+		formatString: 0
+		lineageTag: 6d5c3c5b-1cd8-4694-9e85-1b0a8cae80a8
+
+	column 'Last N Months'
+		formatString: 0
+		lineageTag: 88176c10-bfe3-4967-a607-578a46c86529
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition 'Last N Months-9d790b2c-8030-465c-9373-90c9790343f8' = calculated
+		mode: import
+		source = GENERATESERIES(1, 100, 1)
+
+	annotation PBI_Id = cbadeb6afe3d4ea19f46add8d45e2130
+

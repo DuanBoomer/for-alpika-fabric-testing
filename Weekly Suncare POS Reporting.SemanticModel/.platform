@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Weekly Suncare POS Reporting"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "f42aa8a4-0ec8-9f90-4b13-1780eeae8e60"
+  }
+}

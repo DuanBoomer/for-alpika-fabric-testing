@@ -1,0 +1,105 @@
+table 'Store Performance Metrics'
+	lineageTag: 6c415d47-dd13-4e95-bb78-528441354034
+
+	column 'All Store (Performance)'
+		lineageTag: c83156a6-dc2a-452d-b724-5e3c64ef1029
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'All Store (Performance) Order'
+
+		relatedColumnDetails
+			groupByColumn: 'All Store (Performance) Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'All Store (Performance) Fields'
+		isHidden
+		lineageTag: c2854dde-e494-4dfe-816d-a8b9dfa23244
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'All Store (Performance) Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'All Store (Performance) Order'
+		isHidden
+		formatString: 0
+		lineageTag: d176185c-1a09-44c1-b445-c6d713ee1c3c
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metrics =
+			
+			
+			SWITCH('Store Performance Metrics'[All Store (Performance)],
+			"Address","Address",
+			"City","City",
+			"Zip","Zip",
+			"St","State",
+			"Division/Group","Division",
+			"Region","Region",
+			"District","District",
+			"District Manager","District Manager",
+			"SMM","SMM",
+			"SSR","SSR",
+			"SSR Name","SSR Name",
+			"Suncare - Total BDF YTD Rank","Suncare - Total BDF YTD Rank",
+			"TTL MTD Sales TY","MTD",
+			"TTL MTD sales LY","MTD",
+			"$ Change MTD","MTD",
+			"% Change MTD","MTD",
+			"TTL YTD Sales TY","YTD",
+			"TTL YTD sales LY","YTD",
+			"$ Change YTD","YTD",
+			"% Change YTD","YTD")
+		lineageTag: 4f04bb1a-61a7-4e67-80ba-93f8aed757fe
+		summarizeBy: none
+		sortByColumn: SortMetrics
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column SortMetrics = RELATED('SupportTable_SortMetrics_Store Performance'[SortMetrics])
+		formatString: 0
+		lineageTag: b165051b-452d-412e-9b59-d391358f8ce1
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Store Performance Metrics-e6936f85-d50e-4498-927e-75311322176e' = calculated
+		mode: import
+		source =
+				{
+				    ("Address", NAMEOF('Suncare Coverage Planning'[Address]), 0),
+				    ("City", NAMEOF('Suncare Coverage Planning'[City]), 1),
+				    ("Zip", NAMEOF('Suncare Coverage Planning'[Zip]), 2),
+				    ("St", NAMEOF('Suncare Coverage Planning'[St]), 3),
+				    ("Division/Group", NAMEOF('Suncare Coverage Planning'[Division/Group]), 4),
+				    ("Region", NAMEOF('Suncare Coverage Planning'[Region]), 5),
+				    ("District", NAMEOF('Suncare Coverage Planning'[District]), 6),
+				    ("District Manager", NAMEOF('Suncare Coverage Planning'[District Manager]), 7),
+				    ("SMM", NAMEOF('Suncare Coverage Planning'[SMM]), 8),
+				    ("SSR", NAMEOF('Suncare Coverage Planning'[SSR]), 9),
+				    ("SSR Name", NAMEOF('Suncare Coverage Planning'[SSR Name]), 10),
+				    ("Suncare - Total BDF YTD Rank", NAMEOF('Key Measures'[Suncare - Total BDF YTD Rank]), 11),
+				    ("TTL MTD Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 12),
+				    ("TTL MTD sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 13),
+				    ("$ Change MTD", NAMEOF('Key Measures'[$ Change Weekly]), 14),
+				    ("% Change MTD", NAMEOF('Key Measures'[% Change Weekly]), 15),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 16),
+				    ("TTL YTD sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 17),
+				    ("$ Change YTD", NAMEOF('Key Measures'[$ Change YTD]), 18),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 19)
+				}
+
+	annotation PBI_Id = 144f61ea9388481a9e091e6873d62107
+

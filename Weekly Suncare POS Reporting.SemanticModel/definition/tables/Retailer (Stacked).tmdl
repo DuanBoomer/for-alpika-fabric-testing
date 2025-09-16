@@ -1,0 +1,19 @@
+table 'Retailer (Stacked)'
+	lineageTag: 672adcc4-a2e0-49c7-a457-2fda7e4d0553
+
+	column Retailer
+		lineageTag: 40d1d7f2-edce-41ff-9492-91035dd03f5b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: FactTable[Retailer]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Retailer (Stacked)-a9197ce6-5074-41bf-8825-de6310592c42' = calculated
+		mode: import
+		source =
+				
+				VALUES(FactTable[Retailer])
+
+	annotation PBI_Id = e90dd25de44042459df0c46cfb127528
+

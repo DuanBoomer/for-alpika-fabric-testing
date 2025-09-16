@@ -1,0 +1,51 @@
+table 'Metrics (Summary by Retailer & SSR )'
+	lineageTag: c8b58acf-c785-4f7f-9be7-f9cf0d13b230
+
+	column Metrics
+		lineageTag: d690fd3c-81c5-4e19-83ba-da69874b015b
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Metrics Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Metrics Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Metrics Fields'
+		isHidden
+		lineageTag: 0bb8eb1f-3d27-4bc4-9a6e-863535364fec
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Metrics Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Metrics Order'
+		isHidden
+		formatString: 0
+		lineageTag: 856df322-f6ad-4165-a72c-620b8c07b38b
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Metrics (Summary by Retailer & SSR )-678fe035-d41a-47ac-991f-a0841ae158e6' = calculated
+		mode: import
+		source = ```
+				
+				 {
+				    ("Last N Month", NAMEOF('Key Measures'[Last N Months]), 0),
+				    ("Prior Year N Month", NAMEOF('Key Measures'[Prior N Months]), 1),
+				    ("% Change", NAMEOF('% Change'[% Change (Summary by Retailer & SSR)]), 2)
+				}
+				```
+
+	annotation PBI_Id = 1e90857c33e74e19ac21500e398251f1
+

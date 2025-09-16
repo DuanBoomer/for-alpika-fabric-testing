@@ -1,0 +1,33 @@
+table RetailerOrder
+	lineageTag: 41335e09-5a0d-4e5c-b307-63e6cf77294b
+
+	column Retailer
+		dataType: string
+		lineageTag: 603ea634-3865-432c-9012-51deee0352af
+		summarizeBy: none
+		sourceColumn: Retailer
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReatilerOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: ea0359b8-27f2-4b5b-b364-c3a534483849
+		summarizeBy: sum
+		sourceColumn: ReatilerOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	partition RetailerOrder-1cbadf3b-7049-4e6b-a42f-30900df5b7c9 = m
+		mode: import
+		queryGroup: Fact
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45Wcg4LVtJRMlSK1YlW8i7KT08tAnKNwNygzJJUBcfMFKCAMVggJLEoPbUEyDUBc8MTc9KLUlPzioEipjCR3MQikAozpdhYAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Retailer = _t, ReatilerOrder = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"ReatilerOrder", Int64.Type}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([Retailer] <> "Rite Aid"))
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_ResultType = Table
+

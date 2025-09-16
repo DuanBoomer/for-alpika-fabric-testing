@@ -1,0 +1,125 @@
+table Yearly_Weekly_%Change_Selection
+	lineageTag: 02631bed-d08b-4ebd-8570-8c54be629e5c
+
+	column Yearly_Weekly_%Change_Selection
+		lineageTag: fb89c435-cf1f-4f27-82ec-5bef324509fa
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Yearly_Weekly_%Change_Selection Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Yearly_Weekly_%Change_Selection Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Yearly_Weekly_%Change_Selection Fields'
+		isHidden
+		lineageTag: 86463b64-8eb5-4074-a70d-0fcbf5333d97
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Yearly_Weekly_%Change_Selection Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Yearly_Weekly_%Change_Selection Order'
+		isHidden
+		formatString: 0
+		lineageTag: 3b9e068e-d04b-4dfa-a77c-f86066ee41f9
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Metrics =
+			SWITCH(TRUE(),
+			CONTAINSSTRING('Yearly_Weekly_%Change_Selection'[Yearly_Weekly_%Change_Selection],"YTD") && NOT(CONTAINSSTRING('Yearly_Weekly_%Change_Selection'[Yearly_Weekly_%Change_Selection],"%")),"Yearly",
+			CONTAINSSTRING('Yearly_Weekly_%Change_Selection'[Yearly_Weekly_%Change_Selection],"TTL") && NOT(CONTAINSSTRING('Yearly_Weekly_%Change_Selection'[Yearly_Weekly_%Change_Selection],"%")),"Weekly",
+			CONTAINSSTRING('Yearly_Weekly_%Change_Selection'[Yearly_Weekly_%Change_Selection],"%"),"% Change")
+		lineageTag: 0681a9c8-3d13-45ee-a699-d51061f6cba5
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Window Key' = ```
+			
+			
+			SWITCH(
+			
+			    TRUE(),
+			
+			    [Yearly_Weekly_%Change_Selection Order] IN {0,1,2,3,4,5}, 1,
+			
+			    [Yearly_Weekly_%Change_Selection Order] IN {6,7,8,9,10,11}, 2,
+			
+			    [Yearly_Weekly_%Change_Selection Order] IN {12,13,14,15,16,17}, 3,
+			
+			    [Yearly_Weekly_%Change_Selection Order] IN {18,19,20,21,22,23}, 4,
+			
+			    [Yearly_Weekly_%Change_Selection Order] IN {24,25,26,27,28,29}, 6,
+			
+			    BLANK()
+			
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 384f68c3-5f57-4f76-bbb4-786b81e9cf08
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Yearly_Weekly_%Change_Selection-351f86ac-1ee9-43ac-bc60-0e19b165a86c = calculated
+		mode: import
+		source = ```
+				{
+				    // L1W
+				    ("TTL L1W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 0),
+				    ("TTL L1W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 1),
+				    ("% Change L1W", NAMEOF('Key Measures'[% Change Weekly]), 2),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 3),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 4),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 5),
+				
+				    // L4W
+				    ("TTL L4W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 6),
+				    ("TTL L4W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 7),
+				    ("% Change L4W", NAMEOF('Key Measures'[% Change Weekly]), 8),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 9),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 10),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 11),
+				
+				    // L13W
+				    ("TTL L13W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 12),
+				    ("TTL L13W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 13),
+				    ("% Change L13W", NAMEOF('Key Measures'[% Change Weekly]), 14),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 15),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 16),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 17),
+				
+				    // L26W
+				    ("TTL L26W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 18),
+				    ("TTL L26W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 19),
+				    ("% Change L26W", NAMEOF('Key Measures'[% Change Weekly]), 20),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 21),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 22),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 23),
+				
+				    // L52W
+				    ("TTL L52W Sales TY", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 24),
+				    ("TTL L52W Sales LY", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 25),
+				    ("% Change L52W", NAMEOF('Key Measures'[% Change Weekly]), 26),
+				    ("TTL YTD Sales TY", NAMEOF('Key Measures'[TTL YTD Sales TY]), 27),
+				    ("TTL YTD Sales LY", NAMEOF('Key Measures'[TTL YTD Sales LY]), 28),
+				    ("% Change YTD", NAMEOF('Key Measures'[% Change YTD]), 29)
+				}
+				
+				```
+
+	annotation PBI_Id = 6e2e898bd0ec40878d19c32332e1a7d0
+

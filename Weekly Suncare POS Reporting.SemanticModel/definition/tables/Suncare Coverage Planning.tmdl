@@ -1,0 +1,287 @@
+table 'Suncare Coverage Planning'
+	lineageTag: 7723b494-a57a-46b0-be3c-6b4cae6f6fa5
+
+	column Chain
+		dataType: string
+		lineageTag: 287fead3-3be8-43af-94b9-c4e7b54c9e9e
+		summarizeBy: none
+		sourceColumn: Chain
+
+		annotation SummarizationSetBy = Automatic
+
+	column Address
+		dataType: string
+		lineageTag: 3f8cffd5-f0cb-4714-aef9-94e29e603a4f
+		summarizeBy: none
+		sourceColumn: Address
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 48f12d17-5d21-4578-9fb1-922ca9a1369d
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column St
+		dataType: string
+		lineageTag: f45d822a-202c-4587-91ca-788a77cd0ade
+		summarizeBy: none
+		sourceColumn: St
+
+		annotation SummarizationSetBy = Automatic
+
+	column Zip
+		dataType: string
+		lineageTag: 29b48d4c-f094-4847-bf6b-62306f8c4ac6
+		summarizeBy: none
+		sourceColumn: Zip
+
+		annotation SummarizationSetBy = Automatic
+
+	column Change
+		dataType: string
+		lineageTag: 61f2200c-fed4-407a-b8cc-c993f81b5b5e
+		summarizeBy: none
+		sourceColumn: Change
+
+		annotation SummarizationSetBy = Automatic
+
+	column SMM
+		dataType: string
+		lineageTag: d662d48e-edce-48b6-8e92-8526187ab8e5
+		summarizeBy: none
+		sourceColumn: SMM
+
+		annotation SummarizationSetBy = Automatic
+
+	column SSR
+		dataType: string
+		lineageTag: a04b0f2f-4cfb-4729-8cd7-9d1e800a17a1
+		summarizeBy: none
+		sourceColumn: SSR
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 41aad2f2-f709-402a-9abf-6a1f69b01dc6
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Occurence = CALCULATE(COUNTROWS('Suncare Coverage Planning'),FILTER('Suncare Coverage Planning','Suncare Coverage Planning'[JoinKey]=EARLIER('Suncare Coverage Planning'[JoinKey])))
+		formatString: 0
+		lineageTag: 7dfaaa0b-c15c-4e47-9287-80b208490f3c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Division/Group
+		dataType: string
+		lineageTag: c057eacd-174d-47c4-abda-d31eb582ccdc
+		summarizeBy: none
+		sourceColumn: Division/Group
+
+		annotation SummarizationSetBy = Automatic
+
+	column District
+		dataType: string
+		lineageTag: 476c9994-ca53-4157-991d-e3630acd94aa
+		summarizeBy: none
+		sourceColumn: District
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Master Chain'
+		dataType: string
+		lineageTag: 4aaabecc-2e69-418d-b9e8-210c5dd1c133
+		summarizeBy: none
+		sourceColumn: Master Chain
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Store Name'
+		dataType: string
+		lineageTag: c62830b9-736d-4a4e-80fe-9dc78679f619
+		summarizeBy: none
+		sourceColumn: Store Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'District Manager'
+		dataType: string
+		lineageTag: d950c03b-7090-4794-a3b3-d2d7a7fdc621
+		summarizeBy: none
+		sourceColumn: District Manager
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Account ID'
+		dataType: string
+		lineageTag: 7ca5ea0a-ecdd-44d7-8e2b-ddf4b63bcdb6
+		summarizeBy: none
+		sourceColumn: Account ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Javelin Territory ID'
+		dataType: string
+		lineageTag: 8929d2c1-156a-4908-8018-a4ebe14a16c0
+		summarizeBy: none
+		sourceColumn: Javelin Territory ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Effective Date'
+		dataType: string
+		lineageTag: f054f5bc-f37a-4161-802d-e8a9aa8bfbfd
+		summarizeBy: none
+		sourceColumn: Effective Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SSR Name'
+		dataType: string
+		lineageTag: c5d77080-c16f-45f9-9dc4-563ec3ee0ed7
+		summarizeBy: none
+		sourceColumn: SSR Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Master Chain - Copy'
+		dataType: string
+		lineageTag: f8ce84fd-e127-40c4-9d03-bf12f632f981
+		summarizeBy: none
+		sourceColumn: Master Chain - Copy
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SMM TerritorySort'
+		dataType: string
+		lineageTag: efba543f-16cc-4212-a02f-c805424ff243
+		summarizeBy: none
+		sourceColumn: SMM TerritorySort
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SMM Territory '
+		dataType: string
+		lineageTag: 71f864d4-de4f-49dc-b7ce-c7f4b0526670
+		summarizeBy: none
+		sourceColumn: "SMM Territory "
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Store Num'
+		dataType: int64
+		lineageTag: 2d50f8c7-8426-4763-bb0d-586b83e626e3
+		summarizeBy: none
+		sourceColumn: Store Num
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column JoinKey
+		dataType: int64
+		formatString: 0
+		lineageTag: be84318a-bc96-40dd-9ac2-32c751e1fbc2
+		summarizeBy: none
+		sourceColumn: JoinKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Store Unique ID'
+		dataType: string
+		lineageTag: d11da245-f489-42d6-a72a-1bd6035c04b5
+		summarizeBy: none
+		sourceColumn: Store Unique ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Store Format'
+		dataType: string
+		lineageTag: 7c6baeb3-8220-4be4-96e3-5fe0c3c30c69
+		summarizeBy: none
+		sourceColumn: Store Format
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Circan Mulo+ Market'
+		dataType: string
+		lineageTag: 971a8197-d313-4878-9316-e46f8fa17c7a
+		summarizeBy: none
+		sourceColumn: Circan Mulo+ Market
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Store Tier'
+		dataType: string
+		lineageTag: 3e539649-0314-4cdf-a70b-14bdb4f26af8
+		summarizeBy: none
+		sourceColumn: Store Tier
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region_new = ```
+			
+			IF('Suncare Coverage Planning'[Region] = "nan", BLANK(), 'Suncare Coverage Planning'[Region])
+			
+			```
+		lineageTag: 2220cb8d-e7ae-4839-9509-a608bae607e4
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Suncare Coverage Planning-85c5e502-4273-4cc7-ba4c-19c30d9b7035' = m
+		mode: import
+		queryGroup: Master
+		source =
+				let
+				    Source = Sql.Databases("45abcdnsw5ru7e2ughqdsi5nlu-u2sji3ypczjero2vy4kky64n2i.datawarehouse.fabric.microsoft.com"),
+				    Bronze_Layer = Source{[Name="Bronze_Layer"]}[Data],
+				    #"dbo_Suncare Coverage Planning_new" = Bronze_Layer{[Schema="dbo",Item="Suncare Coverage Planning_new"]}[Data],
+				    #"Duplicated Column" = Table.DuplicateColumn(#"dbo_Suncare Coverage Planning_new", "Master_Chain", "Master Chain - Copy"),
+				    #"Replaced Value" = Table.ReplaceValue(#"Duplicated Column","CVS Corp","CVS",Replacer.ReplaceText,{"Master Chain - Copy"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Walgreen Co","Walgreens",Replacer.ReplaceText,{"Master Chain - Copy"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","Wal Mart","Walmart",Replacer.ReplaceText,{"Master Chain - Copy"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Replaced Value2", each true),
+				    #"Added Conditional Column" = Table.AddColumn(#"Filtered Rows", "SMM_TerritorySort", each if [SMM] = "West" then 1 else if [SMM] = "Northeast" then 1 else if [SMM] = "Florida - East" then 1 else if [SMM] = "Florida - West" then 1 else if [SMM] = "Z No Cov" then 2 else null),
+				    #"Added Conditional Column1" = Table.AddColumn(#"Added Conditional Column", "SMM Territory ", each if Text.Contains([SMM], "Cov") then [SMM] else "Covered"),
+				    #"Split Column by Delimiter" = Table.SplitColumn(#"Added Conditional Column1", "Store_Num", Splitter.SplitTextByEachDelimiter({"#"}, QuoteStyle.Csv, false), {"Store Num.1", "Store Num.2"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"Store Num.1", Int64.Type}, {"Store Num.2", type text}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type", "Separator", each "."),
+				    #"Inserted Merged Column" = Table.AddColumn(#"Added Custom", "Store2", each Text.Combine({[Store Num.2], [Separator]}, ""), type text),
+				    #"Added Conditional Column2" = Table.AddColumn(#"Inserted Merged Column", "Custom", each if [Store Num.2] = null then [Store Num.2] else [Store2]),
+				    #"Removed Columns" = Table.RemoveColumns(#"Added Conditional Column2",{"Separator", "Store2", "Store Num.2"}),
+				    #"Merged Columns" = Table.CombineColumns(Table.TransformColumnTypes(#"Removed Columns", {{"Store Num.1", type text}, {"Custom", type text}}, "en-IN"),{"Store Num.1", "Custom"},Combiner.CombineTextByDelimiter("", QuoteStyle.None),"Store Num"),
+				    #"Trimmed Text1" = Table.TransformColumns(#"Merged Columns",{{"Master Chain - Copy", Text.Trim, type text}}),
+				    #"Cleaned Text1" = Table.TransformColumns(#"Trimmed Text1",{{"Master Chain - Copy", Text.Clean, type text}}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Cleaned Text1",{{"Store Num", type number}}),
+				    #"Merged Queries" = Table.NestedJoin(#"Changed Type1", {"Master Chain - Copy"}, RetailerOrder, {"Retailer"}, "RetailerOrder", JoinKind.RightOuter),
+				    #"Expanded RetailerOrder" = Table.ExpandTableColumn(#"Merged Queries", "RetailerOrder", {"ReatilerOrder"}, {"ReatilerOrder"}),
+				    #"Inserted Merged Column1" = Table.AddColumn(#"Expanded RetailerOrder", "JoinKey", each Text.Combine({Text.From([Store Num], "en-IN"), Text.From([ReatilerOrder], "en-IN")}, ""), type text),
+				    #"Removed Columns1" = Table.RemoveColumns(#"Inserted Merged Column1",{"ReatilerOrder"}),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Removed Columns1",{{"JoinKey", Int64.Type}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type2",{{"Master_Chain", "Master Chain"}, {"Store_Name", "Store Name"}, {"Store_Unique_ID", "Store Unique ID"}, {"Store_Format", "Store Format"}, {"District_Manager", "District Manager"}, {"Circan_Mulo+_Market", "Circan Mulo+ Market"}, {"Store_Tier", "Store Tier"}, {"Account_ID", "Account ID"}, {"Javelin_Territory_ID", "Javelin Territory ID"}, {"Effective_Date", "Effective Date"}, {"SSR_Name", "SSR Name"}, {"SMM_TerritorySort", "SMM TerritorySort"}}),
+				    #"Filtered Rows1" = Table.SelectRows(#"Renamed Columns", each true),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Filtered Rows1","#(00A0)#(00A0)","non",Replacer.ReplaceText,{"District Manager"}),
+				    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3","nan","",Replacer.ReplaceText,{"District Manager"}),
+				    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4","nan","",Replacer.ReplaceText,{"Javelin Territory ID"}),
+				    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5","nan","",Replacer.ReplaceText,{"Region"}),
+				    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6","nan","",Replacer.ReplaceText,{"Division/Group"}),
+				    #"Replaced Value8" = Table.ReplaceValue(#"Replaced Value7","nan","",Replacer.ReplaceText,{"District"}),
+				    #"Replaced Value9" = Table.ReplaceValue(#"Replaced Value8","non","",Replacer.ReplaceText,{"District Manager"})
+				in
+				    #"Replaced Value9"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

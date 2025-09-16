@@ -1,0 +1,2112 @@
+table 'Key Measures'
+	lineageTag: 3ee31d54-784c-4c49-adf4-f793e317a33d
+
+	measure 'TTL Weekly Sales TY' = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year])
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			VAR _Last_N_Weeks = [select N weeks]
+			
+			-- Find the last year's corresponding Week Ending Date
+			VAR EndDate =
+			    CALCULATE(
+			        MAX('Date'[Week ending]),
+			        FILTER(
+			            ALL('Date'),
+			            'Date'[Year] = SelectedYear &&
+			            'Date'[Week] = SelectedWeek
+			        )
+			    )
+			
+			-- Calculate Start Date for Different Week Ranges
+			VAR StartDate_1W = EndDate - 6
+			VAR StartDate_4W = EndDate - 27
+			VAR StartDate_13W = EndDate - 90
+			VAR StartDate_26W = EndDate - 181
+			VAR StartDate_52W = EndDate - 363
+			
+			-- Total Sales Calculation
+			RETURN
+			IF(
+			    _Last_N_Weeks = 9999, 
+			    [TTL YTD Sales TY],  -- Return YTD Sales if 9999 is selected
+			    SWITCH(
+			        _Last_N_Weeks,
+			        1, CALCULATE([Total sales], 'Date'[Date] >= StartDate_1W && 'Date'[Date] <= EndDate),
+			        4, CALCULATE([Total sales], 'Date'[Date] >= StartDate_4W && 'Date'[Date] <= EndDate),
+			        13, CALCULATE([Total sales], 'Date'[Date] >= StartDate_13W && 'Date'[Date] <= EndDate),
+			        26, CALCULATE([Total sales], 'Date'[Date] >= StartDate_26W && 'Date'[Date] <= EndDate),
+			        52, CALCULATE([Total sales], 'Date'[Date] >= StartDate_52W && 'Date'[Date] <= EndDate),
+			        BLANK()  -- Returns blank if no match
+			    )
+			)
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: weekly
+		lineageTag: 2a453b97-4923-4ae3-be83-2e7b5e18985d
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'TTL Weekly Sales LY' = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year]) - 1
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			VAR _Last_N_Weeks = [select N weeks]
+			
+			-- Find the last year's corresponding Week Ending Date
+			VAR EndDate =
+			    CALCULATE(
+			        MAX('Date'[Week ending]),
+			        FILTER(
+			            ALL('Date'),
+			            'Date'[Year] = SelectedYear &&
+			            'Date'[Week] = SelectedWeek
+			        )
+			    )
+			
+			-- Calculate Start Date for Different Week Ranges
+			VAR StartDate_1W = EndDate - 6
+			VAR StartDate_4W = EndDate - 27
+			VAR StartDate_13W = EndDate - 90
+			VAR StartDate_26W = EndDate - 181
+			VAR StartDate_52W = EndDate - 363
+			
+			-- Total Sales Calculation
+			RETURN
+			IF(
+			    _Last_N_Weeks = 9999, 
+			    [TTL YTD Sales LY],  -- Return YTD Sales if 9999 is selected
+			    SWITCH(
+			        _Last_N_Weeks,
+			        1, CALCULATE([Total sales], 'Date'[Date] >= StartDate_1W && 'Date'[Date] <= EndDate),
+			        4, CALCULATE([Total sales], 'Date'[Date] >= StartDate_4W && 'Date'[Date] <= EndDate),
+			        13, CALCULATE([Total sales], 'Date'[Date] >= StartDate_13W && 'Date'[Date] <= EndDate),
+			        26, CALCULATE([Total sales], 'Date'[Date] >= StartDate_26W && 'Date'[Date] <= EndDate),
+			        52, CALCULATE([Total sales], 'Date'[Date] >= StartDate_52W && 'Date'[Date] <= EndDate),
+			        BLANK()  -- Returns blank if no match
+			    )
+			)
+			
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: weekly
+		lineageTag: 0a2915b4-8bc2-4a67-a4c6-8e79dbe5d47f
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'TTL YTD Sales LY' = ```
+			
+			CALCULATE(
+			    [Total sales],
+			    FILTER(
+			        ALL('Date'),
+			        'Date'[Year] = YEAR(MAX('Date'[Date])) - 1 &&
+			        'Date'[Week] <= MAX('Date'[Week])
+			    )
+			)
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: YTD
+		lineageTag: dbc1e94e-b70d-452d-9a16-9655868ad9dc
+
+		changedProperty = FormatString
+
+	measure 'TTL YTD Sales TY' = ```
+			
+			CALCULATE(
+			    [Total Sales],
+			    FILTER(
+			        ALL('Date'),
+			        'Date'[Year] = MAX('Date'[Year]) &&
+			        'Date'[Week] <= MAX('Date'[Week])
+			    )
+			)
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: YTD
+		lineageTag: be8c73b7-f0d3-4310-94ff-bc0ac92ffa28
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure '$ Change Weekly' = [TTL Weekly Sales TY]-[TTL Weekly Sales LY]
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: weekly
+		lineageTag: fb50962c-f991-43f6-a2c7-cd53f2edba49
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total sales' = SUM(FactTable[Value])
+		lineageTag: 13496adb-8dcd-4419-bab1-c73b52cb90b0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '$ Change YTD' = [TTL YTD Sales TY]-[TTL YTD Sales LY]
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: YTD
+		lineageTag: b00c4641-3c8e-4793-8e0f-7007a2a3bbda
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'TTL mtd Chnage' = CALCULATE( [$ Change Weekly],ALL(FactTable),ALL('Date'))
+		displayFolder: weekly
+		lineageTag: f7fc448c-8212-414c-a523-80b901b4f0d2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Change YTD' = ```
+			
+			
+			DIVIDE([$ Change YTD],ABS([TTL YTD Sales LY]),0)
+			
+			
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: YTD
+		lineageTag: ff21fd71-0577-40b7-9d67-a61090cae858
+
+		changedProperty = FormatString
+
+	measure 'Suncare - Total BDF YTD Rank' =
+			If(not(isblank([TTL YTD Sales TY])),RANKX(Filter(ALL('Suncare Coverage Planning'[Store Num],'Suncare Coverage Planning'[SMM],'Suncare Coverage Planning'[SSR],'Suncare Coverage Planning'[Store Name],'Suncare Coverage Planning'[Address],'Suncare Coverage Planning'[Region],'Suncare Coverage Planning'[Division/Group],'Suncare Coverage Planning'[District Manager],'Suncare Coverage Planning'[SSR Name],'Suncare Coverage Planning'[District],'Suncare Coverage Planning'[City],'Suncare Coverage Planning'[St],'Suncare Coverage Planning'[Zip]),not(isblank([TTL YTD Sales TY]))),[TTL YTD Sales TY],,DESC,Dense)
+			
+			
+			)
+		formatString: 0
+		lineageTag: bb226393-cd71-4328-9c01-fd85a02bf343
+
+		changedProperty = FormatString
+
+	measure 'YTD % Chg Rank SMM' = if(not(isblank([% Change YTD])),RANKX(Filter(ALLSELECTED('Suncare Coverage Planning'[SMM]),not(isblank([% Change YTD]))),[% Change YTD],,desc,dense))
+		formatString: 0
+		lineageTag: 95c546d0-0f1e-4590-88ae-8efbd394027c
+
+	measure 'YTD % Chg Rank SSR' = if(not(isblank([% Change YTD])),RANKX(Filter(ALLSELECTED('Suncare Coverage Planning'[SSR]),not(isblank([% Change YTD]))),[% Change YTD],,desc,dense))
+		formatString: 0
+		lineageTag: 95d4bd8a-7880-438b-9af6-a4ac44eaacbf
+
+	measure 'YTD % Chg Rank' = ```
+			
+			If( ISBLANK([TTL YTD Sales LY]),
+			SWITCH(TRUE(),
+			ISFILTERED('Suncare Coverage Planning'[SSR]), if(not(isblank([TTL YTD Sales TY])),RANKX(Filter(ALLSELECTED('Suncare Coverage Planning'[SSR]),not(isblank([TTL YTD Sales TY]))),[TTL YTD Sales TY],,desc,dense)),
+			ISFILTERED('Suncare Coverage Planning'[SMM]),if(not(isblank([TTL YTD Sales TY])),RANKX(Filter(ALLSELECTED('Suncare Coverage Planning'[SMM]),not(isblank([TTL YTD Sales TY]))),[TTL YTD Sales TY],,desc,dense)),ISFILTERED('Suncare Coverage Planning'[SSR Name]), if(not(isblank([TTL YTD Sales TY])),RANKX(Filter(ALLSELECTED('Suncare Coverage Planning'[SSR name]),not(isblank([TTL YTD Sales TY]))),[TTL YTD Sales TY],,desc,dense)),
+			ISFILTERED('Suncare Coverage Planning'[SMM Territory ]),if(not(isblank([TTL YTD Sales TY])),RANKX(Filter(ALLSELECTED('Suncare Coverage Planning'[SMM Territory ]),not(isblank([TTL YTD Sales TY]))),[TTL YTD Sales TY],,desc,dense))),
+			
+			
+			SWITCH(TRUE(),
+			ISFILTERED('Suncare Coverage Planning'[SSR]),[YTD % Chg Rank SSR],
+			ISFILTERED('Suncare Coverage Planning'[SMM]),[YTD % Chg Rank SMM],
+			ISFILTERED('Suncare Coverage Planning'[SMM]),[YTD % Chg Rank SSR Name],
+			ISFILTERED('Suncare Coverage Planning'[SMM Territory ]),if(not(isblank([% Change YTD])),RANKX(Filter(ALLSELECTED('Suncare Coverage Planning'[SMM Territory ]),not(isblank([% Change YTD]))),[% Change YTD],,desc,dense))))
+			
+			
+			```
+		formatString: 0
+		lineageTag: e82270db-a0d3-4761-bd19-f33195f05f8e
+
+	measure SSR = RANKX(allselected('Suncare Coverage Planning'[SSR]),[% Change YTD],,desc, dense)
+		formatString: 0
+		displayFolder: Retailer_Camparison
+		lineageTag: a4c921e1-4d81-425f-9b6f-b6252b1068e1
+
+	measure '% Change weekly TTL' = ```
+			
+			VAR x = [select N weeks]
+			VAR Change = calculate(abs(DIVIDE([TTL Weekly Sales TY], [TTL Weekly Sales LY])) - 1,all('Suncare Coverage Planning'[Store Num]))
+			RETURN 
+			    IF(Change = -1, BLANK(), Change)
+			
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Store/Store Filter Total\MTD
+		lineageTag: 33b10ec7-78e0-47b8-b9f7-99150ec802e7
+
+		changedProperty = FormatString
+
+	measure '% Change YTD TTL' =
+			
+			
+			CALCULATE(DIVIDE([$ Change YTD(TTL)],ABS([TTL YTD sales LY(TTL)]),0),ALL('Suncare Coverage Planning'[Store Num_1]))
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Store/Store Filter Total\YTD
+		lineageTag: 9818bd91-f778-4eb6-b2d4-0b7cacf6b07a
+
+		changedProperty = FormatString
+
+	measure 'TTL YTD Sales TY(TTL)' = CALCULATE(TOTALYTD([Total sales],DATESYTD('Date'[Date])),ALL('Suncare Coverage Planning'[Store Num_1]))
+		displayFolder: Store/Store Filter Total\YTD
+		lineageTag: cdac31d9-07c6-4b77-9769-039c28f51619
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TTL YTD sales LY(TTL)' = CALCULATE(TOTALyTD([Total sales],SAMEPERIODLASTYEAR('Date'[Date])),ALL('Suncare Coverage Planning'[Store Num_1]))
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Store/Store Filter Total\YTD
+		lineageTag: c9840e57-5340-4c07-a77b-88188144f0ce
+
+		changedProperty = FormatString
+
+	measure '$ Change YTD(TTL)' = CALCULATE([TTL YTD Sales TY]-[TTL YTD sales LY],ALL('Suncare Coverage Planning'[Store Num_1]))
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Store/Store Filter Total\YTD
+		lineageTag: a5d44aef-81f4-41cd-a31e-9201544bfefc
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'TTL MTD sales LY Eucerin' =
+			
+			
+			TOTALMTD([Total sales],SAMEPERIODLASTYEAR('Date'[Date]),FactTable[Product]="Eucerin Sun")
+		lineageTag: 2f99d9a7-d31e-4054-928d-124ed343aa64
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Change weekly (Total)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [% Change weekly TTL],
+			s=2, [% Change Weekly])
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Store/Store Filter Total
+		lineageTag: ffb272df-8966-403a-a721-05bddb3bfc96
+
+		changedProperty = FormatString
+
+	measure '% Change YTD(Total)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [% Change YTD TTL],
+			s=2, [% Change YTD])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Store/Store Filter Total
+		lineageTag: c4f5104c-0197-409a-8253-b63e63d83d2e
+
+		changedProperty = FormatString
+
+	measure '$ Change weekly(Total)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1,  [$ Change weekly (TTL)],
+			s=2, [$ Change Weekly])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Store/Store Filter Total
+		lineageTag: 4ae6193c-9377-4019-a7da-e18d57f67a5a
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure '$ Change YTD(Total)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1,  [$ Change YTD(TTL)],
+			s=2, [$ Change YTD])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Store/Store Filter Total
+		lineageTag: 461b8255-be8c-4014-9eff-26c237f494f2
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'TTL Weekly Sales LY (Total)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [TTL Weekly Sales LY(TTL)],
+			s=2, [TTL Weekly Sales LY])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Store/Store Filter Total
+		lineageTag: 0da7863e-d08a-4075-8e05-4a165bb7e64c
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'TTL YTD Sales LY (Total)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [TTL YTD Sales LY(TTL)],
+			s=2, [TTL YTD Sales LY])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Store/Store Filter Total
+		lineageTag: 70226326-6d9d-4a19-87bb-2594cb1e011e
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'TTL YTD Sales TY (Total)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [TTL YTD Sales TY(TTL)],
+			s=2, [TTL YTD Sales TY])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Store/Store Filter Total
+		lineageTag: 57b099d9-d029-4e43-8b23-747ae9ee96cd
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total sales(coppertone)' = calculate(SUM(FactTable[Value]),FactTable[Product]="COPPERTONE")
+		lineageTag: 23f15dd0-7077-4b34-9c5a-270a2d07647d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total sales(Eucerin SUN)' = calculate(SUM(FactTable[Value]),FactTable[Product]="EUCERIN SUN")
+		lineageTag: 6d65f9c5-0ebd-4f64-879d-092583d9b8cf
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Trend MTD' = ```
+			
+			    //VAR Down = UNICHAR(129095) 
+			     // VAR Up = UNICHAR(129093)
+			    VAR Down = UNICHAR(9660)
+			    VAR Up = UNICHAR(9650)
+			    VAR UpLots = UP & Up
+			    VAR Side = UNICHAR(11166)
+			    Return
+			   SWITCH(True(),
+			           [% Change Weekly] < 0,Down,
+			          
+			          [% Change Weekly]> 0 ,Up,
+			           
+			           [% Change Weekly]= BLANK(),UNICHAR(8722)
+			           
+			       )
+			```
+		displayFolder: Trend
+		lineageTag: da2bda44-d5b3-4bc4-8b03-c0af56e7dd6f
+
+	measure 'Trend YTD' = ```
+			
+			    VAR Down = UNICHAR(9660)
+			    VAR Up = UNICHAR(9650)
+			    VAR UpLots = UP & Up
+			    VAR Side = UNICHAR(11166)
+			    Return
+			       SWITCH(True(),
+			           [% Change YTD] < 0, Down,
+			          
+			          [% Change YTD] > 0,Up,[% Change YTD]= BLANK(),UNICHAR(8722)
+			           
+			       )
+			
+			```
+		displayFolder: Trend
+		lineageTag: d8638a3d-3781-40ee-8b32-4b81c9ee6a2a
+
+	measure 'TTL weekly Sales TY ( Coppertone)' =
+			
+			Calculate( [TTL Weekly Sales TY],
+			FactTable[Product]="COPPERTONE")
+		lineageTag: 0ae4a8b7-c771-4ff3-a6ff-245a742d63e9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TTL weekly Sales TY (EUCERIN SUN)' =
+			
+			Calculate( [TTL Weekly Sales TY],
+			FactTable[Product]="EUCERIN SUN")
+		lineageTag: a9110459-619f-4b6e-8197-4cdd1052c9a1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CoppertoneRetailers1 = ```
+			
+			VAR retailer= IFERROR(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (CT1)],DESC),0)
+			
+			VAR r=  retailer&" : All Store Performance (Coppertone) "
+			return IF(retailer=0,"Home Page",r)
+			
+			```
+		displayFolder: Coppertone
+		lineageTag: 747c4248-605f-4fce-9a04-e452e2edf784
+
+	measure CoppertoneRetailers2 =
+			
+			VAR retailer= IFERROR(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (CT2)],DESC),0)
+			
+			VAR r=  retailer&" : All Store Performance (Coppertone) "
+			return IF(retailer=0,"Home Page",r)
+		displayFolder: Coppertone
+		lineageTag: 310a5f9e-1a30-4af2-8a51-c8f6758b49b1
+
+	measure CoppertoneRetailers3 =
+			
+			VAR retailer= IFERROR(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (CT3)],DESC),0)
+			
+			VAR r=  retailer&" : All Store Performance (Coppertone) "
+			return IF(retailer=0,"Home Page",r)
+		displayFolder: Coppertone
+		lineageTag: 8a509ad8-79c4-4e41-9200-ecf70881342d
+
+	measure CoppertoneRetailers4 =
+			
+			VAR retailer= IFERROR(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (CT4)],DESC),0)
+			
+			VAR r=  retailer&" : All Store Performance (Coppertone) "
+			return IF(retailer=0,"Home Page",r)
+		displayFolder: Coppertone
+		lineageTag: 637a2f38-30a5-4e67-b366-20a3d8d61d74
+
+	measure CoppertoneRetailers5 =
+			
+			VAR retailer= IFERROR(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (CT5)],DESC),0)
+			
+			VAR r=  retailer&" : All Store Performance (Coppertone) "
+			return IF(retailer=0,"Home Page",r)
+		displayFolder: Coppertone
+		lineageTag: 410d259f-4166-4df8-9cee-1979e8e47c9b
+
+	measure CoppertoneRetailers6 =
+			
+			VAR retailer= IFERROR(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (CT6)],DESC),0)
+			
+			VAR r=  retailer&" : All Store Performance (Coppertone) "
+			return IF(retailer=0,"Home Page",r)
+		displayFolder: Coppertone
+		lineageTag: d4f4dfd9-d7d1-43ae-a236-68f6aaf38411
+
+	measure 'EUCERIN SUNRetailers1' =
+			
+			VAR retailer= IFError(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (ES1)],DESC),0)
+			
+			VAR r=   retailer &" : All Store Performance (EUCERIN SUN) "
+			 RETURN  If(retailer= 0,"Home Page", r)
+		displayFolder: EUCERIN SUN
+		lineageTag: 6873248e-d8f1-4148-8c42-c73b71db2e78
+
+	measure 'EUCERIN SUNRetailers2' =
+			
+			VAR retailer= IFError(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (ES2)],DESC),0)
+			
+			VAR r=   retailer &" : All Store Performance (EUCERIN SUN) "
+			 RETURN  If(retailer= 0,"Home Page", r)
+		displayFolder: EUCERIN SUN
+		lineageTag: 0cba6a57-f266-48e5-9916-2a923d245433
+
+	measure 'EUCERIN SUNRetailers3' =
+			
+			VAR retailer= IFError(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (ES3)],DESC),0)
+			
+			VAR r=   retailer &" : All Store Performance (EUCERIN SUN) "
+			 RETURN  If(retailer= 0,"Home Page", r)
+		displayFolder: EUCERIN SUN
+		lineageTag: 0958f285-ebea-4d51-b3ca-512e26c016de
+
+	measure 'EUCERIN SUNRetailers4' =
+			
+			VAR retailer= IFError(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (ES4)],DESC),0)
+			
+			VAR r=   retailer &" : All Store Performance (EUCERIN SUN) "
+			 RETURN  If(retailer= 0,"Home Page", r)
+		displayFolder: EUCERIN SUN
+		lineageTag: d67778f4-a895-4845-aaf0-c3199f6b0f62
+
+	measure 'EUCERIN SUNRetailers5' =
+			
+			VAR retailer= IFError(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (ES5)],DESC),0)
+			
+			VAR r=   retailer &" : All Store Performance (EUCERIN SUN) "
+			 RETURN  If(retailer= 0,"Home Page", r)
+		displayFolder: EUCERIN SUN
+		lineageTag: b4dbaac6-96d6-47c6-8ff7-9fa392930620
+
+	measure 'EUCERIN SUNRetailers6' =
+			
+			VAR retailer= IFError(TOPN(1,Values('Retailer Image'[Retailers]),'Key Measures'[Rank (ES6)],DESC),0)
+			
+			VAR r=   retailer &" : All Store Performance (EUCERIN SUN) "
+			 RETURN  If(retailer= 0,"Home Page", r)
+		displayFolder: EUCERIN SUN
+		lineageTag: 6d5162b6-e1e2-46f8-8bf4-9c8fe6fa2596
+
+	measure 'Rank (ES1)' = if([Rank retailer (Eucerin Sun)]=1,1,BLANK())
+		formatString: 0
+		displayFolder: EUCERIN SUN
+		lineageTag: 43762476-296e-4520-8973-8d640d23b88a
+
+	measure 'Rank (ES2)' = IF('Retailer Image'[Rank retailer (Eucerin Sun)]=2,1,BLANK())
+		formatString: 0
+		displayFolder: EUCERIN SUN
+		lineageTag: e0beb144-d8d3-481f-9163-fcdeb87a6b58
+
+	measure 'Rank (ES3)' = if('Retailer Image'[Rank retailer (Eucerin Sun)]=3,1,BLANK())
+		formatString: 0
+		displayFolder: EUCERIN SUN
+		lineageTag: f2c4b31b-d615-4b4c-8ba4-558b860a6f10
+
+	measure 'Rank (ES4)' = if('Retailer Image'[Rank retailer (Eucerin Sun)]=4,1,BLANK())
+		formatString: 0
+		displayFolder: EUCERIN SUN
+		lineageTag: 43cdd840-c7f4-400b-8737-387c632ff75f
+
+	measure 'Rank (ES5)' = if('Retailer Image'[Rank retailer (Eucerin Sun)]=5,1,BLANK())
+		formatString: 0
+		displayFolder: EUCERIN SUN
+		lineageTag: 0594ccea-fa8f-44c5-aa38-b7c4472c6ca2
+
+	measure 'Rank (ES6)' = IF('Retailer Image'[Rank retailer (Eucerin Sun)]=6,1,BLANK())
+		formatString: 0
+		displayFolder: EUCERIN SUN
+		lineageTag: bb4208db-117b-4680-8e9e-c52e11b1dac3
+
+	measure 'Rank (CT1)' = IF('Retailer Image'[Rank retailer (Coppertone)]=1,1,BLANK())
+		formatString: 0
+		displayFolder: Coppertone
+		lineageTag: 03af1998-775a-4e44-8bc6-c3f9c2d2075d
+
+	measure 'Rank (CT2)' = IF('Retailer Image'[Rank retailer (Coppertone)]=2,1,BLANK())
+		formatString: 0
+		displayFolder: Coppertone
+		lineageTag: 7434de78-8fcf-4b3a-87ab-d6f918f3a7e0
+
+	measure 'Rank (CT3)' = IF('Retailer Image'[Rank retailer (Coppertone)]=3,1,BLANK())
+		formatString: 0
+		displayFolder: Coppertone
+		lineageTag: 4d232743-1805-43c4-bcb0-fdb17c38456e
+
+	measure 'Rank (CT4)' = IF('Retailer Image'[Rank retailer (Coppertone)]=4,1,BLANK())
+		formatString: 0
+		displayFolder: Coppertone
+		lineageTag: 19d2f466-8874-47ab-9989-aad2cbce3780
+
+	measure 'Rank (CT5)' = IF('Retailer Image'[Rank retailer (Coppertone)]=5,1,BLANK())
+		formatString: 0
+		displayFolder: Coppertone
+		lineageTag: 0d78d473-acb0-4348-8f06-2b4e2ade5653
+
+	measure 'Rank (CT6)' = IF('Retailer Image'[Rank retailer (Coppertone)]=6,1,BLANK())
+		formatString: 0
+		displayFolder: Coppertone
+		lineageTag: 9d2b460f-d726-48fa-a0f2-2e7b21e33a04
+
+	measure 'Customer vs Others' = ```
+			
+			VAR CurrentCategory = MAX('Retailer +others'[Retailer])
+			VAR CurrentCategoryStacked =MAX('Retailer (Stacked)'[Retailer])
+			VAR SelectedCategories = ALLSELECTED('FactTable'[Retailer])
+			VAR PossibleCategories = ALL('FactTable'[Retailer])
+			RETURN
+			SWITCH(
+			  TRUE(),
+			CurrentCategory IN SelectedCategories && CurrentCategoryStacked = CurrentCategory,
+			    CALCULATE(
+			
+			   [TTL Weekly Sales TY],
+			     FactTable[Retailer] = CurrentCategory
+			   ),
+			   CurrentCategory = "Others", 
+			   CALCULATE(
+			      [TTL Weekly Sales TY],
+			      FILTER(
+			         ALL(FactTable[Retailer]),
+			         FactTable[Retailer] IN PossibleCategories
+			         && NOT(FactTable[Retailer]) IN SelectedCategories
+			      && FactTable[Retailer]= CurrentCategoryStacked
+			 )
+			))
+			
+			```
+		displayFolder: Retailer_Camparison
+		lineageTag: 54ae7fcc-bbae-4c47-9173-7492fbca1505
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure MTD = CALCULATE(TOTALMTD([Total sales],'Date'[Date]))
+		formatString: #,0
+		lineageTag: 33b0b955-0f8b-4060-96d3-8a28ae683772
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure SelectedRetailerVsothers = SELECTEDVALUE(FactTable[Retailer]) & " vs " & "others Customer"
+		displayFolder: Retailer_Camparison
+		lineageTag: cde181d4-98e1-4262-9f92-26403ba8dff7
+
+	measure 'All Store Performance Header Title' = [Brand Text] & " | " & [Retailer Text]  & " | " & [Week Date Text]
+		displayFolder: Header\ALL SSR
+		lineageTag: 55102979-9377-4fa3-8c2a-e120b11a5ada
+
+	measure SelectedRetailerbySMM = SELECTEDVALUE(FactTable[Retailer]) & ": TY Sales"&" & "  & "LY Sales" &" by SMM"
+		displayFolder: Retailer_Camparison\Selected Retailer
+		lineageTag: 09f52bc5-a892-4b5b-8754-bcf6814acf06
+
+	measure 'selected retailer % Change' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([% Change Weekly],FactTable[Retailer]=y)
+			return
+			x
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Retailer_Camparison\Selected Retailer
+		lineageTag: d91b0041-4f5d-44d5-8afb-7278b1b5d37a
+
+		changedProperty = FormatString
+
+	measure 'selected retailer $ Change' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([$ Change Weekly],FactTable[Retailer]=y)
+			return
+			x
+		displayFolder: Retailer_Camparison\Selected Retailer
+		lineageTag: 8ee05477-0dc5-4ba0-907b-74b66dc5130f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'selected retailer LY' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([TTL Weekly Sales LY],FactTable[Retailer]=y)
+			return
+			x
+		formatString: #,0.00
+		displayFolder: Retailer_Camparison\Selected Retailer
+		lineageTag: 13883b50-562b-47c2-b412-05993570bebb
+
+		changedProperty = FormatString
+
+	measure 'selected retailer Store' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE(COUNT(FactTable[Store]),FactTable[Retailer]=y)
+			return
+			x
+		formatString: 0
+		displayFolder: Retailer_Camparison\Selected Retailer
+		lineageTag: 28b1508d-86f0-441b-bc1b-2c841e1edaca
+
+	measure 'selected retailer text' = SELECTEDVALUE(FactTable[Retailer])
+		displayFolder: Retailer_Camparison\Selected Retailer
+		lineageTag: 36a63c53-52c1-40c6-b52a-5e9433b6ea35
+
+	measure 'selected retailer Trend' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([Trend MTD],FactTable[Retailer]=y)
+			return
+			x
+		displayFolder: Retailer_Camparison\Selected Retailer
+		lineageTag: 345776df-0e1d-4ef8-bf78-0c3450b2713d
+
+	measure 'selected retailer TY' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([TTL Weekly Sales TY],FactTable[Retailer]=y)
+			return
+			x
+		formatString: #,0
+		displayFolder: Retailer_Camparison\Selected Retailer
+		lineageTag: b2270cc7-7ccc-4fdb-b92c-0c6847ee5cf1
+
+		changedProperty = FormatString
+
+	measure 'not selected retailer % Change' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([% Change Weekly],not(FactTable[Retailer])=y)
+			return
+			x
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Retailer_Camparison\Others
+		lineageTag: 83452a49-0eac-4c66-a8bd-1762bd6d8d31
+
+		changedProperty = FormatString
+
+	measure 'NOT selected retailer $ Change' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([$ Change Weekly],NOT(FactTable[Retailer])=y)
+			return
+			x
+		displayFolder: Retailer_Camparison\Others
+		lineageTag: d1038161-6daf-4c47-843f-ef4e99b2d6b0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'not selected retailer  LY' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([TTL Weekly Sales LY],not(FactTable[Retailer])=y)
+			return
+			x
+		displayFolder: Retailer_Camparison\Others
+		lineageTag: 47926a61-8ff1-4d7e-87df-f7cd67aa5a5d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'NOT selected retailer Store' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE(COUNT((FactTable[Store])),NOT(FactTable[Retailer])=y)
+			return
+			x
+		formatString: 0
+		displayFolder: Retailer_Camparison\Others
+		lineageTag: 55413492-3f06-4cc3-b3ee-4c87a7ab7a10
+
+	measure 'NOT selected retailer Trend' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([Trend MTD],NOT(FactTable[Retailer])=y)
+			return
+			x
+		displayFolder: Retailer_Camparison\Others
+		lineageTag: 6c0b9b41-10b7-45fa-917d-dfc22660ea4a
+
+	measure 'NOT selected retailer TY' =
+			
+			var y= SELECTEDVALUE(FactTable[Retailer])
+			var x=CALCULATE([TTL Weekly Sales TY],NOT(FactTable[Retailer])=y)
+			return
+			x
+		displayFolder: Retailer_Camparison\Others
+		lineageTag: ff282553-484a-4fe2-a0ad-64a8764ef0af
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '$ Change weekly (TTL)' = CALCULATE([TTL Weekly Sales TY]-[TTL Weekly Sales LY],ALL('Suncare Coverage Planning'[Store Num]))
+		displayFolder: Store/Store Filter Total\MTD
+		lineageTag: e233d641-4158-4f90-afc9-b9517fab7e4e
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'MTD LY' = CALCULATE(TOTALMTD([Total sales],SAMEPERIODLASTYEAR('Date'[Date])))
+		formatString: #,0
+		lineageTag: 46a0bbe8-e5dc-4d5d-bd0e-02ccbb8abefb
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Retailer Performance Title' = ```
+			
+			If(ISFILTERED('Date'[Week No With Date]),
+			"Retailer Performance : "& Max('Date'[Week No With Date] ) , "Retailer Performance  ")
+			
+			```
+		displayFolder: Header\ALL SSR
+		lineageTag: bdf62caf-c589-4d35-bfca-7a4bd646965b
+
+	measure 'Brand Text' = IF(HASONEFILTER('Product Image'[Product]),"Brand: " & SELECTEDVALUE('Product Image'[Product]),"Brand: All")
+		displayFolder: Header\ALL SSR
+		lineageTag: 170e8b0d-8f01-4ad3-8cca-6e74b7640c73
+
+	measure 'Month Year Text' = ```
+			If(ISFILTERED('Date'[Month Year]),
+			"Month Year : "& Max('Date'[Week] ) , "Month Year")
+			 
+			
+			```
+		displayFolder: Header\ALL SSR
+		lineageTag: 09a3bba5-2eec-4898-9bf6-d3737776ad9c
+
+	measure 'Retailer Text' = IF(ISFILTERED('Retailer Image'[Retailers]),"Retailer : " & SELECTEDVALUE('Retailer Image'[Retailers]),"Retailer : All Retailer")
+		displayFolder: Header\ALL SSR
+		lineageTag: a8b3d13a-cbd2-446b-b21c-acb83341ab8f
+
+	measure 'Text SSR' = ```
+			"Month : " &
+			if (ISFILTERED('Date'[Month Year_]),
+			SELECTEDVALUE('Date'[Month Year_]),"Multiple Months Selected") 
+			```
+		displayFolder: Header\ALL SSR
+		lineageTag: 2a904a19-7d97-4ee5-90e6-5436f545d7e8
+
+	measure 'Store Count' = distinctCount(FactTable[JOINKEY])
+		formatString: #,0
+		lineageTag: 70d976b1-2c6c-4146-8091-78070c3e4ff7
+
+	measure 'Store view  Text' =
+			
+			
+			VAR s= SELECTEDVALUE('Suncare Coverage Planning'[SMM Territory ])
+			
+			RETURN "Detailed Information: " & SWITCH(TRUE(),
+			s=BLANK(),"Not included into report",s)
+		lineageTag: 04d56f01-9c3c-4480-8b96-647175e0eaae
+
+	measure 'YTD % Chg Rank SSR Name' = if(not(isblank([% Change YTD])),RANKX(Filter(ALLSELECTED('Suncare Coverage Planning'[SSR Name]),not(isblank([% Change YTD]))),[% Change YTD],,desc,dense))
+		formatString: 0
+		lineageTag: f3c9a8e5-6157-4b42-b637-e3b5edf610cd
+
+	measure 'SSR Name' =
+			
+			If(ISINSCOPE('Suncare Coverage Planning'[SSR]),MAX('Suncare Coverage Planning'[SSR Name]))
+			//If(ISFILTERED('2022 Suncare Coverage Planning'[SSR]),MAX('2022 Suncare Coverage Planning'[SSR Name]))
+			//If(ISFILTERED('2022 Suncare Coverage Planning'[SMM]),MAX('2022 Suncare Coverage Planning'[SSR Name]))
+		lineageTag: d160b885-2b01-4a54-87ab-0bf49a70c83f
+		dataCategory: Uncategorized
+
+	measure 'FilterSlicerWaterfall Chart' = IF(HASONEFILTER('Retailer Image'[Retailers]),1,BLANK())
+		formatString: 0
+		lineageTag: 30a33bd7-4b9e-4693-80a1-0f842fa44ac0
+
+	measure 'SSR Name (NEW)' = (If(ISINSCOPE('Suncare Coverage Planning'[SMM]),MAX('Suncare Coverage Planning'[SSR Name])))
+		lineageTag: 68a89ea5-7c5c-4059-b687-7ba62fccbbb4
+
+	measure 'Trend color' = ```
+			
+			     SWITCH(True(),
+			           [% Change Weekly] < 0,"#D64550",
+			          
+			          [% Change Weekly]> 0, "#30A128"
+			           
+			       )
+			```
+		lineageTag: 67eacbcb-a188-477a-b9c0-f83c76644d50
+
+	measure 'Color $ Change YTD' = ```
+			
+			     SWITCH(True(),
+			           [$ Change YTD] < 0,"#D64550",
+			          
+			          [$ Change YTD]> 0, "#30A128"
+			           )
+			```
+		lineageTag: 584f2a45-5bca-4b50-909b-cb666a652dec
+
+	measure 'Color % Change MTD' = ```
+			
+			
+			     
+			     SWITCH(True(),
+			           [% Change Weekly] < 0,"#D64550",
+			          
+			          [% Change Weekly]> 0, "#30A128"
+			           
+			       )
+			```
+		lineageTag: dbdb0572-61ea-48b6-81bb-06d38253faf1
+
+	measure 'Color % Change YTD' = ```
+			
+			
+			     
+			     SWITCH(True(),
+			           [% Change YTD] < 0,"#D64550",
+			          
+			          [% Change YTD]> 0, "#30A128"
+			           
+			       )
+			```
+		lineageTag: 53a512fb-4edd-4f9e-bcbd-84a5a5441a5b
+
+	measure 'Color $ Change MTD' = ```
+			
+			     SWITCH(True(),
+			           [$ Change Weekly] < 0,"#D64550",
+			          
+			          [$ Change Weekly]> 0, "#30A128"
+			           )
+			```
+		lineageTag: 622fdb69-b2d8-471b-90db-c7ba417326e7
+
+	measure 'Color selected retailer $ Change' = ```
+			
+			
+			     
+			     SWITCH(True(),
+			           [selected retailer $ Change] < 0,"#D64550",
+			          
+			          [selected retailer $ Change]> 0, "#30A128"
+			           
+			       )
+			```
+		lineageTag: 47a7b8cb-f8a8-4e97-8673-99a37aa9e7e0
+
+	measure 'Color selected retailer % Change' = ```
+			
+			
+			     
+			     SWITCH(True(),
+			           [selected retailer % Change] < 0,"#D64550",
+			          
+			          [selected retailer % Change]> 0, "#30A128"
+			           
+			       )
+			```
+		lineageTag: aa78aba9-7426-4b69-915f-3728efd5dd74
+
+	measure 'Color not selected retailer % Change' = ```
+			
+			
+			     
+			     SWITCH(True(),
+			           [not selected retailer % Change] < 0,"#D64550",
+			          
+			          [not selected retailer % Change]> 0, "#30A128"
+			           
+			       )
+			```
+		lineageTag: d95dc1ef-8a63-4158-b268-4bdadf28dee4
+
+	measure 'Color not selected retailer $ Change' = ```
+			
+			
+			     
+			     SWITCH(True(),
+			           [not selected retailer $ Change] < 0,"#D64550",
+			          
+			          [not selected retailer $ Change]> 0, "#30A128"
+			           
+			       )
+			```
+		lineageTag: a34dfd2e-bb02-4ed0-ab7b-429670b87078
+
+	measure 'Color not selected retailer trend Change' = ```
+			
+			
+			     
+			     SWITCH(True(),
+			           [NOT selected retailer Trend]  < 0,"#D64550",
+			          
+			          [NOT selected retailer Trend]> 0, "#30A128"
+			           
+			       )
+			```
+		formatString: 0
+		lineageTag: 46b5b7da-24dc-4251-88a0-7f2c6587aff0
+
+	measure 'Retailer Performance Title Mobile Layout' =
+			
+			"Retailer Performance"
+		lineageTag: bed9b845-0328-4117-bf5a-d1e9cb386c69
+
+	measure 'Retailer Comparison Title' =
+			
+			
+			"Retailer Comparison"
+		lineageTag: 32dbad89-8f51-4871-ac6e-c0716003e0b0
+
+	measure 'Trend MTD (TTL)' = ```
+			
+			    //VAR Down = UNICHAR(129095) 
+			     // VAR Up = UNICHAR(129093)
+			    VAR Down = UNICHAR(9660)
+			    VAR Up = UNICHAR(9650)
+			    VAR UpLots = UP & Up
+			    VAR Side = UNICHAR(11166)
+			    Return
+			   SWITCH(True(),
+			           [% Change weekly TTL] < 0,Down,
+			          
+			          [% Change weekly TTL]> 0 ,Up,
+			           
+			           [% Change weekly TTL]= BLANK(),UNICHAR(8722)
+			           
+			       )
+			```
+		lineageTag: 554017c0-78ce-4c9d-bc47-b883a2966e41
+
+	measure 'Trend YTD (TTL)' = ```
+			
+			    VAR Down = UNICHAR(9660)
+			    VAR Up = UNICHAR(9650)
+			    VAR UpLots = UP & Up
+			    VAR Side = UNICHAR(11166)
+			    Return
+			       SWITCH(True(),
+			           [% Change YTD TTL] < 0, Down,
+			          
+			          [% Change YTD TTL] > 0,Up,[% Change YTD TTL]= BLANK(),UNICHAR(8722)
+			           
+			       )
+			
+			```
+		lineageTag: f6ef04ca-916a-4f7e-9eca-a16f15c68627
+
+	measure 'Div Performance Column Chart Title' = SELECTEDVALUE('Yearly_Weekly_%Change_Selection'[Metrics]) & " Sales by Region"
+		lineageTag: 9d1d8cb8-1db3-494a-8eec-2cca339b799f
+
+	measure 'TTL MTD Sales TY (CVS Cat)' = ```
+			//TOTALMTD(SUM(FactTable[Value]),'Date'[Date])
+			                   TOTALMTD([Total Sales (CVS Cat)] ,'Date'[Date]) 
+			                   //TOTALytd([Total sales],'Date'[Date])
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Category\General
+		lineageTag: 819d65bf-41f7-49de-a31b-22f2b07e615e
+
+		changedProperty = FormatString
+
+	measure 'TTL MTD Sales LY (CVS Cat)' =
+			
+			TOTALMTD([Total Sales (CVS Cat)],SAMEPERIODLASTYEAR('Date'[Date]))
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Category\General
+		lineageTag: 93471b6f-5fc2-4a49-bc98-9358fd17c0a0
+
+		changedProperty = FormatString
+
+	measure '$ Change MTD (CVS Cat)' = [TTL MTD Sales TY (CVS Cat)]-[TTL MTD Sales LY (CVS Cat)]
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Category\General
+		lineageTag: 1bb6cb37-cb0b-4ae2-94e7-3453612f9506
+
+		changedProperty = FormatString
+
+	measure '% Change MTD (CVS Cat)' =
+			
+			DIVIDE([$ Change MTD (CVS Cat)],ABS([TTL MTD Sales LY (CVS Cat)]))
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: CVS Category\General
+		lineageTag: a7976cd8-dcd2-46ab-9d0d-a8b15fbe1455
+
+		changedProperty = FormatString
+
+	measure 'TTL YTD Sales TY (CVS Cat)' = TOTALYTD([Total Sales (CVS Cat)],'Date'[Date])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Category\General
+		lineageTag: 96202ad0-ce73-4171-8096-8f11c44a1272
+
+		changedProperty = FormatString
+
+	measure 'TTL YTD sales LY (CVS Cat)' = TOTALYTD([Total Sales (CVS Cat)],SAMEPERIODLASTYEAR('Date'[Date]))
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Category\General
+		lineageTag: d4b32356-51c9-4a8f-a589-32bd79aa9ea7
+
+		changedProperty = FormatString
+
+	measure '$ Change YTD (CVS Cat)' = [TTL YTD Sales TY (CVS Cat)]-[TTL YTD sales LY (CVS Cat)]
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Category\General
+		lineageTag: 1c0cd526-1d15-47fa-ba18-2c3efa2aff25
+
+		changedProperty = FormatString
+
+	measure '% Change YTD (CVS Cat)' = ```
+			
+			
+			DIVIDE([$ Change YTD (CVS Cat)],ABS([TTL YTD sales LY (CVS Cat)]),0)
+			
+			
+			
+			```
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: CVS Category\General
+		lineageTag: df90a2ff-95de-4ac5-aecd-215370b44ee4
+
+		changedProperty = FormatString
+
+	measure 'Total Sales (CVS Cat)' = SUM(Fact_Coppertone_CVS_Category_POS[Value])
+		displayFolder: CVS Category\General
+		lineageTag: 9d8d76fa-73be-4287-b18a-5e8570b61135
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Suncare - Total BDF YTD Rank (CVS Cat)' =
+			If(not(isblank([TTL YTD Sales TY (CVS Cat)])),RANKX(Filter(ALL('Suncare Coverage Planning'[Store Num_1],'Suncare Coverage Planning'[SMM],'Suncare Coverage Planning'[SSR],'Suncare Coverage Planning'[Store Name],'Suncare Coverage Planning'[Address],'Suncare Coverage Planning'[Region],'Suncare Coverage Planning'[Division/Group],'Suncare Coverage Planning'[District Manager],'Suncare Coverage Planning'[SSR Name],'Suncare Coverage Planning'[District],'Suncare Coverage Planning'[City],'Suncare Coverage Planning'[St],'Suncare Coverage Planning'[Zip]),not(isblank([TTL YTD Sales TY (CVS Cat)]))),[TTL YTD Sales TY (CVS Cat)],,DESC,Dense)
+			
+			
+			)
+		formatString: 0
+		displayFolder: CVS Category\General
+		lineageTag: 1e4d1e0c-ced3-4674-a89e-57541fde31f3
+
+	measure 'Color % Change MTD (CVS Cat)' = ```
+			
+			
+			     
+			     SWITCH(True(),
+			           [% Change MTD (CVS Cat)] < 0,"#D64550",
+			          
+			          [% Change MTD (CVS Cat)]> 0, "#30A128"
+			           
+			       )
+			```
+		displayFolder: CVS Category\General
+		lineageTag: 08cd2638-01a6-4435-92c0-e3cc3344d889
+
+	measure '% Change MTD TTL (CVS Cat)' =
+			
+			
+			
+			calculate(DIVIDE([$ Change MTD (CVS Cat)],ABS([TTL MTD Sales LY (CVS Cat)]))
+			,all('Suncare Coverage Planning'[Store Num_1]))
+		displayFolder: CVS Category\TTL\MTD
+		lineageTag: 4b723e62-369e-434d-ba02-63f9fcca8588
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '$ Change MTD (TTL)(CVS Cat)' = CALCULATE([TTL MTD Sales TY (CVS Cat)]-[TTL MTD Sales LY (CVS Cat)],ALL('Suncare Coverage Planning'[Store Num_1]))
+		displayFolder: CVS Category\TTL\MTD
+		lineageTag: 1cf5238c-78d7-45dc-b551-2d708dc3edee
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TTL MTD sales LY (TTL) (CVS Cat)' =
+			
+			CALCULATE(TOTALMTD([Total Sales (CVS Cat)],SAMEPERIODLASTYEAR('Date'[Date])),ALL('Suncare Coverage Planning'[Store Num_1]))
+		displayFolder: CVS Category\TTL\MTD
+		lineageTag: 48dd3d25-7e81-496f-9e30-5cf71d2dd9de
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TTL MTD Sales TY (TTL) (CVS Cat)' = ```
+			
+			                  calculate( TOTALMTD([Total Sales (CVS Cat)] ,'Date'[Date]),ALL('Suncare Coverage Planning'[Store Num_1]))
+			```
+		displayFolder: CVS Category\TTL\MTD
+		lineageTag: 0a58d7d5-cdd5-4316-9fcf-4901bfb2a73e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TTL MTD Sales LY (Total) (CVS Cat)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [TTL MTD sales LY (TTL) (CVS Cat)],
+			s=2, [TTL MTD Sales LY (CVS Cat)])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Cat
+		lineageTag: 224f09ad-4f28-4892-a9b8-c4459718db7f
+
+		changedProperty = FormatString
+
+	measure 'TTL MTD Sales TY (Total) (CVS Cat)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [TTL MTD Sales TY (TTL) (CVS Cat)],
+			s=2, [TTL MTD Sales TY (CVS Cat)])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Cat
+		lineageTag: c70bb9d7-8f83-4032-9918-1dd4fcc3e0d5
+
+		changedProperty = FormatString
+
+	measure 'TTL YTD Sales LY (Total) (CVS Cat)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [TTL YTD sales LY(TTL) (CVS Cat)],
+			s=2, [TTL YTD sales LY (CVS Cat)])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Cat
+		lineageTag: 5317e62e-dc2d-44a2-b9de-3021ac601432
+
+		changedProperty = FormatString
+
+	measure '% Change YTD TTL (CVS Cat)' =
+			
+			
+			CALCULATE(DIVIDE([$ Change YTD (CVS Cat)],ABS([TTL YTD sales LY (CVS Cat)]),0),ALL('Suncare Coverage Planning'[Store Num_1]))
+		displayFolder: CVS Category\TTL\YTD
+		lineageTag: 7f88b463-a9e9-4507-84a4-670b49b8e48f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '$ Change YTD(TTL) (CVS Cat)' = CALCULATE([TTL YTD Sales TY (CVS Cat)]-[TTL YTD sales LY (CVS Cat)],ALL('Suncare Coverage Planning'[Store Num_1]))
+		displayFolder: CVS Category\TTL\YTD
+		lineageTag: e66c4ec4-83c7-411c-ac26-385a320faf8c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TTL YTD sales LY(TTL) (CVS Cat)' = CALCULATE(TOTALyTD([Total Sales (CVS Cat)],SAMEPERIODLASTYEAR('Date'[Date])),ALL('Suncare Coverage Planning'[Store Num_1]))
+		displayFolder: CVS Category\TTL\YTD
+		lineageTag: 30513980-c1ca-4cb8-b7ba-3fbda6305fdb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TTL YTD Sales TY(TTL) (CVS Cat)' = CALCULATE(TOTALYTD([Total Sales (CVS Cat)],DATESYTD('Date'[Date])),ALL('Suncare Coverage Planning'[Store Num_1]))
+		displayFolder: CVS Category\TTL\YTD
+		lineageTag: 6ff7fa44-0db9-4391-86f4-4b7d3f47c99b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'TTL YTD Sales TY (Total) (CVS Cat)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [TTL YTD Sales TY(TTL) (CVS Cat)],
+			s=2, [TTL YTD Sales TY (CVS Cat)])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Cat
+		lineageTag: 612c975c-bd54-4154-8bb5-3421a5d07508
+
+		changedProperty = FormatString
+
+	measure '% Change MTD(Total) (CVS Cat)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [% Change MTD TTL (CVS Cat)],
+			s=2, [% Change MTD (CVS Cat)])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: CVS Cat
+		lineageTag: f3ef4fcb-2507-4b83-aebd-ebff2292dffe
+
+		changedProperty = FormatString
+
+	measure '% Change YTD(Total) (CVS Cat)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1, [% Change YTD TTL (CVS Cat)],
+			s=2, [% Change YTD (CVS Cat)])
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: CVS Cat
+		lineageTag: f1a799bd-0f7b-4c79-a2a0-df9427fa7924
+
+		changedProperty = FormatString
+
+	measure '$ Change MTD(Total) (CVS Cat)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1,   [$ Change MTD (TTL)(CVS Cat)],
+			s=2, [$ Change MTD (CVS Cat)])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Cat
+		lineageTag: fe8ead93-a4d1-4398-8e5f-6a06ab62f474
+
+		changedProperty = FormatString
+
+	measure '$ Change YTD(Total) (CVS Cat)' =
+			
+			VAR s= MAX(CustomStoreTotal[Sort])
+			RETURN SWITCH(TRUE(),
+			s=1,  [$ Change YTD(TTL)],
+			s=2, [$ Change YTD])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: CVS Cat
+		lineageTag: 1447fa0c-5793-442e-92b2-0b51a57a1bd2
+
+		changedProperty = FormatString
+
+	measure 'Region Performance Column Chart Title' = SELECTEDVALUE('Yearly_Weekly_%Change_Selection'[Metrics]) & " Sales by District"
+		lineageTag: bcc88ed2-5b7a-4043-bbf5-721463db0d5e
+
+	measure 'All Store Performance Header Title  (CVS Cat)' = "Retailer: CVS"  & " | " & [Month Year Text]
+		lineageTag: 36c45a9a-e17f-41ec-b0ed-f54b54aa4d95
+
+	measure 'Last N Months' = ```
+			
+			VAR _Last_N_Month=[Last N Months Value] -1 
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			VAR RESULT=CALCULATE(SUM(FactTable[Value]),FILTER(All('Date'),'Date'[Date]>=_startdate && 'Date'[Date]<=_endate))
+			RETURN RESULT
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 2117dd5c-d9d0-4a11-9dd8-a1e9eb827a59
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Prior N Months' = ```
+			
+			/*VAR _Last_N_Month=[Last N Months Value] 
+			VAR _e=MAX('Date'[Date])
+			VAR _endate= EOMONTH(_e,-_Last_N_Month)
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month+1)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			VAR RESULT=CALCULATE(SUM(FactTable[Value]),FILTER(All('Date'),'Date'[Date]>=_startdate && 'Date'[Date]<=_endate))
+			--RETURN RESULT */
+			
+			VAR _Last_N_Month=[Last N Months Value] -1 
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EDATE(_endate,-12)
+			VAR x= EDATE(_endate,-12-_Last_N_Month)
+			VAR _startdate= DATE(Year(x), MONTH(x),1)
+			VAR RESULT=CALCULATE(SUM(FactTable[Value]),FILTER(All('Date'),'Date'[Date]>=_startdate && 'Date'[Date]<=PREVIOUSDATE))
+			RETURN RESULT
+			```
+		lineageTag: 3bdaf6cb-7aa0-44e1-99f4-f361c4cd42b4
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Last N Months Range' =
+			
+			VAR _Last_N_Month= [Last N Months Value] -1
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			
+			RETURN "Last " & [Last N Months Value] &" Month : " & FORMAT(_startdate, "MMM YYYY") & " - " & FORMAT(_endate ,"MMM YYYY")
+		lineageTag: a9fffb8d-3a37-45a6-b48d-e43f7c0c79d4
+
+	measure 'Prior N Months Range' = ```
+			
+			/*VAR _Last_N_Month=[Last N Months Value] 
+			VAR _e=MAX('Date'[Date])
+			VAR _endate= EOMONTH(_e,-_Last_N_Month)
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month+1)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1) */
+			VAR _Last_N_Month=[Last N Months Value] -1 
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EDATE(_endate,-12)
+			VAR x= EDATE(_endate,-12-_Last_N_Month)
+			VAR _startdate= DATE(Year(x), MONTH(x),1)
+			VAR RESULT=CALCULATE(SUM(FactTable[Value]),FILTER(All('Date'),'Date'[Date]>=_startdate && 'Date'[Date]<=PREVIOUSDATE))
+			
+			
+			RETURN "Prior Year " & [Last N Months Value] &" Month : " &FORMAT(_startdate, "MMM YYYY") & " - " & FORMAT(PREVIOUSDATE ,"MMM YYYY")
+			```
+		lineageTag: 5ceea8c0-865d-48a2-a37f-551692b74629
+
+	measure 'Summary by Retailer & SSR Header Title' = [Brand Text] & " | " & [Week Date Text]
+		lineageTag: 3a381207-2552-4212-a838-a3db09434362
+
+	measure 'Trend Summary by Retailer and SSR' = ```
+			
+			    VAR Down = UNICHAR(9660)
+			    VAR Up = UNICHAR(9650)
+			    VAR UpLots = UP & Up
+			    VAR Side = UNICHAR(11166)
+			    Return
+			       SWITCH(True(),
+			         'Last N Week'[% Change] < 0, Down,
+			          
+			           'Last N Week'[% Change]> 0,Up, 'Last N Week'[% Change]= BLANK(),UNICHAR(8722)
+			           
+			       )
+			
+			```
+		lineageTag: d73ecd60-0440-4ac9-8d9b-54e548b51ea7
+
+	measure 'Last N Heading' =
+			
+			VAR _Last_N_Month= [Last N Months Value] -1
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			
+			RETURN "Last " & [Last N Months Value] &" Month"
+		lineageTag: 72068e69-f74e-4aa0-9a85-9fea7636ad42
+
+	measure 'Last N MonthName' =
+			
+			VAR _Last_N_Month= [Last N Months Value] -1
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			
+			RETURN FORMAT(_startdate, "MMM YYYY") & " - " & FORMAT(_endate ,"MMM YYYY")
+		lineageTag: 95b0f5c9-bba7-4992-b396-eb98b708f06d
+
+	measure 'Prior N Months Heading' = ```
+			
+			VAR _Last_N_Month=[Last N Months Value] 
+			/*VAR _e=MAX('Date'[Date])
+			VAR _endate= EOMONTH(_e,-_Last_N_Month)
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month+1)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1) */
+			//VAR _Last_N_Month=[Last N Months Value] -1 
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EDATE(_endate,-12)
+			VAR x= EDATE(_endate,-12-_Last_N_Month)
+			VAR _startdate= DATE(Year(x), MONTH(x),1)
+			VAR RESULT=CALCULATE(SUM(FactTable[Value]),FILTER(All('Date'),'Date'[Date]>=_startdate && 'Date'[Date]<=PREVIOUSDATE))
+			
+			
+			RETURN "Prior Year " & [Last N Months Value] &" Month "
+			```
+		lineageTag: 73a332f4-b82a-4083-8fa9-3a9d4654953e
+
+	measure 'Prior N MonthName' = ```
+			
+			VAR _Last_N_Month=[Last N Months Value] 
+			VAR _e=MAX('Date'[Date])
+			VAR _endate= EOMONTH(_e,-_Last_N_Month)
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month+1)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			
+			RETURN FORMAT(_startdate, "MMM YYYY") & " - " & FORMAT(_endate ,"MMM YYYY")
+			```
+		lineageTag: c84349f0-3d3e-4d20-b6d7-0d68943a9626
+
+	measure 'Last N MonthsHeading Ipad' =
+			
+			VAR _Last_N_Month= [Last N Months Value] -1
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			
+			RETURN "Last " & [Last N Months Value] &" Month"
+		lineageTag: 7b5541e5-e304-4bff-82ba-5a93292254d8
+
+	measure 'Last N MonthName Ipad' =
+			
+			VAR _Last_N_Month= [Last N Months Value] -1
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			
+			RETURN  FORMAT(_startdate, "MMM YYYY") & " - " & FORMAT(_endate ,"MMM YYYY")
+		lineageTag: 3eaecefa-e238-46cd-bda5-f3c6ec92afe5
+
+	measure 'Prior N MonthHeading Ipad' = ```
+			
+			VAR _Last_N_Month=[Last N Months Value] 
+			VAR _e=MAX('Date'[Date])
+			VAR _endate= EOMONTH(_e,-_Last_N_Month)
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month+1)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			
+			RETURN "Prior Year " & [Last N Months Value] &" Month "
+			```
+		lineageTag: 706edddc-0a8b-4b55-8376-62d4e83b3477
+
+	measure 'Prior N MonthName Ipad' = ```
+			
+			/*VAR _Last_N_Month=[Last N Months Value] 
+			VAR _e=MAX('Date'[Date])
+			VAR _endate= EOMONTH(_e,-_Last_N_Month)
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month+1)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1)
+			*/
+			/*VAR _Last_N_Month=[Last N Months Value] 
+			VAR _e=MAX('Date'[Date])
+			VAR _endate= EOMONTH(_e,-_Last_N_Month)
+			VAR PREVIOUSDATE= EOMONTH(_endate,-_Last_N_Month+1)
+			VAR _startdate= DATE(Year(PREVIOUSDATE), MONTH(PREVIOUSDATE),1) */
+			VAR _Last_N_Month=[Last N Months Value] -1 
+			VAR _endate= MAX('Date'[Date])
+			VAR PREVIOUSDATE= EDATE(_endate,-12)
+			VAR x= EDATE(_endate,-12-_Last_N_Month)
+			VAR _startdate= DATE(Year(x), MONTH(x),1)
+			VAR RESULT=CALCULATE(SUM(FactTable[Value]),FILTER(All('Date'),'Date'[Date]>=_startdate && 'Date'[Date]<=PREVIOUSDATE))
+			
+			
+			RETURN FORMAT(_startdate, "MMM YYYY") & " - " & FORMAT(PREVIOUSDATE,"MMM YYYY")
+			```
+		lineageTag: c3d25377-83ad-472e-8406-b61d0f2e3b3c
+
+	measure 'Retailer Text(iPad)' = IF(ISFILTERED('Retailer Image'[Retailers]),"Retailer : " & SELECTEDVALUE('Retailer Image'[Retailers]),"Retailer : All")
+		lineageTag: a0605fee-d141-4bac-9cc1-282299742e4f
+
+	measure 'All Store Performance Header Title(iPad)' = [Brand Text] & " | " & [Retailer Text(iPad)]  & " | " & [Month Year Text]
+		lineageTag: d4636f0a-47a6-4ad1-8411-7dde90fb00df
+
+	measure 'iPad_All Store Performance Header Title' = [Brand Text] & " | " & [Retailer Text(iPad)]  & " | " & [Month Year Text]
+		lineageTag: 252bc3e9-dd79-445d-b47a-1621864ae738
+
+	measure Measure_Updated = ```
+			
+			VAR SelectedDate = SELECTEDVALUE('Date'[Date].[Date]) 
+			VAR LastThursday2022 = 
+			    CALCULATE(
+			        MAX('Date'[Date].[Date]), 
+			        YEAR('Date'[Date].[Date]) = 2025, 
+			        'Date'[weekday number] = 4
+			    )
+			
+			VAR DateRange = 
+			    DATESINPERIOD(
+			        'Date'[Date].[Date], 
+			        LASTDATE('Date'[Date].[Date]), 
+			        -7, 
+			        DAY
+			    )
+			
+			RETURN 
+			CALCULATE(
+			    SUM('FactTable'[Value]), 
+			    DateRange
+			)
+			```
+		lineageTag: 4a584f73-572a-4091-9d1b-7e676bd515b4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Week Date Text' =
+			If(ISFILTERED('Date'[Week No With Date]),
+			"Week End Date : "& Max('Date'[Week No With Date] ) , "Week Date")
+		displayFolder: ALL SSR
+		lineageTag: 95fae8c6-9bc5-48f5-b595-ebab90d31564
+
+	measure 'HeaderTextAllSSR Performance' = ```
+			
+			VAR SelectedWeeks = SELECTEDVALUE('Week Table'[Last N Weeks], "Select a Time Period")
+			RETURN SelectedWeeks & " Sales"
+			
+			```
+		displayFolder: ALL SSR
+		lineageTag: 494d88b9-c6de-4054-9630-bd781123fa5f
+
+	measure WeekEndDate =
+			
+			VAr v= If(Isblank(SELECTEDVALUE('Date'[Week])), MAX('Date'[Week]),SELECTEDVALUE('Date'[Week]))
+			VAr c=CALCULATE(MAx('Date'[Date]), 'Date'[Year] && WEEKNUM('Date'[Date])=v && 'Date'[Week] <> 53)
+			RETURN  FORMAT(c,"MM-DD-YYYY")
+		lineageTag: 2a311b57-aa95-40b3-99b3-2973c327b2c4
+
+	measure 'Selected Year Test' = ```
+			MAX('Date'[Year])
+			
+			```
+		formatString: 0
+		lineageTag: c6d03dc6-0fed-49bd-98a0-8d2b3ba7d1a8
+
+	measure Last1weeksales = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year]) - 1
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			
+			-- Check if Week 53 should be excluded
+			VAR IsValidWeek = IF(SelectedWeek = 53, FALSE(), TRUE())
+			
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR StartDate = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1
+			VAR EndDate = StartDate + 6
+			
+			RETURN 
+			IF(
+			    IsValidWeek, 
+			    CALCULATE(
+			        [Total sales], 
+			        'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			    ),
+			    BLANK() -- Return blank when Week 53 is selected
+			)
+			
+			```
+		lineageTag: 3c485b07-5cd3-406c-a12a-8791946fa4e2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Last4WeekSales = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year]) - 1
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR StartDate = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1 - 21  -- Shift back 3 extra weeks
+			VAR EndDate = StartDate + 27  -- 4 weeks total (4 * 7 - 1)
+			
+			RETURN 
+			CALCULATE(
+			    [Total sales], 
+			    'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			)
+			
+			```
+		lineageTag: b9175b0a-0d6e-4295-8cb2-87a8fd955f44
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Last13WeekSales = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year]) 
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			
+			-- Get the current week start date
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR CurrentWeekStart = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1
+			
+			-- Calculate the start and end date for the last 13 weeks
+			VAR StartDate = CurrentWeekStart - (13 * 7)  -- Move back 13 full weeks
+			VAR EndDate = CurrentWeekStart - 1  -- End date is the last day of the previous week
+			
+			RETURN 
+			CALCULATE(
+			    [Total sales], 
+			    'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			)
+			
+			
+			```
+		lineageTag: b2184b1e-a2ea-49e4-91f9-5f7a35c8cdc8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Last26WeekSales = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year]) - 1
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR StartDate = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1 - (26 * 7 - 7)  -- Move back 25 weeks
+			VAR EndDate = StartDate + (26 * 7 - 1)  -- 26 weeks total
+			
+			RETURN 
+			CALCULATE(
+			    [Total sales], 
+			    'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			)
+			
+			
+			```
+		lineageTag: 55693a92-d222-48ed-b3fa-d18519452081
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Last52WeekSales = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year]) - 1
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR StartDate = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1 - (52 * 7 - 7)  -- Move back 51 weeks
+			VAR EndDate = StartDate + (52 * 7 - 1)  -- 52 weeks total
+			
+			RETURN 
+			CALCULATE(
+			    [Total sales], 
+			    'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			)
+			
+			```
+		lineageTag: 25bb280f-233f-475a-ba92-af87f0022470
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure SelectedLastNWeeksSales = ```
+			
+			VAR SelectedValue = SELECTEDVALUE('LastNWEEKSsales'[LastNWeeks_new]) -- Assuming 'LastNWeeks' is your parameter table
+			RETURN
+			    SWITCH(
+			        SelectedValue,
+			        0, [Last1weeksales],
+			        1, [Last4WeekSales],
+			        2, [Last13WeekSales],
+			        3, [Last26WeekSales],
+			        4, [Last52WeekSales],
+			        BLANK() -- Default case if nothing is selected
+			    )
+			
+			
+			```
+		formatString: 0
+		lineageTag: 7828b476-e233-426c-920b-67c9ef87cd5a
+
+	measure ThisYearSales1week = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year])
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			
+			-- Check if Week 53 should be excluded
+			VAR IsValidWeek = IF(SelectedWeek = 53, FALSE(), TRUE())
+			
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR StartDate = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1
+			VAR EndDate = StartDate + 6
+			
+			RETURN 
+			IF(
+			    IsValidWeek, 
+			    CALCULATE(
+			        [Total sales], 
+			        'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			    ),
+			    BLANK() -- Return blank when Week 53 is selected
+			)
+			
+			```
+		lineageTag: 384b4a89-66f2-4896-8329-b120d0461e9f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure ThisYearSales_4Weeks = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year])
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			
+			-- Check if Week 53 should be excluded
+			VAR IsValidWeek = IF(SelectedWeek = 53, FALSE(), TRUE())
+			
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR StartDate = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1
+			VAR EndDate = StartDate + (4 * 7) - 1
+			
+			RETURN 
+			IF(
+			    IsValidWeek, 
+			    CALCULATE(
+			        [Total sales], 
+			        'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			    ),
+			    BLANK()
+			)
+			
+			```
+		lineageTag: a8e36cab-b2a6-4f92-b425-264de60546c9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure ThisYearSales_13Weeks = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year])
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			
+			VAR IsValidWeek = IF(SelectedWeek = 53, FALSE(), TRUE())
+			
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR StartDate = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1
+			VAR EndDate = StartDate + (13 * 7) - 1
+			
+			RETURN 
+			IF(
+			    IsValidWeek, 
+			    CALCULATE(
+			        [Total sales], 
+			        'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			    ),
+			    BLANK()
+			)
+			
+			```
+		lineageTag: 5259c5d8-863f-49f7-9b28-6d8485139540
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure ThisYearSales_26Weeks = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year])
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			
+			VAR IsValidWeek = IF(SelectedWeek = 53, FALSE(), TRUE())
+			
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR StartDate = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1
+			VAR EndDate = StartDate + (26 * 7) - 1
+			
+			RETURN 
+			IF(
+			    IsValidWeek, 
+			    CALCULATE(
+			        [Total sales], 
+			        'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			    ),
+			    BLANK()
+			)
+			
+			```
+		lineageTag: 3146632a-4dc2-4305-b36c-51a406275d90
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure ThisYearSales_52Weeks = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year])
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			
+			VAR IsValidWeek = IF(SelectedWeek = 53, FALSE(), TRUE())
+			
+			VAR WeekStartDate = DATE(SelectedYear, 1, 1) + (SelectedWeek - 1) * 7
+			VAR StartDate = WeekStartDate - WEEKDAY(WeekStartDate, 2) + 1
+			VAR EndDate = StartDate + (52 * 7) - 1
+			
+			RETURN 
+			IF(
+			    IsValidWeek, 
+			    CALCULATE(
+			        [Total sales], 
+			        'Date'[Date] >= StartDate && 'Date'[Date] <= EndDate
+			    ),
+			    BLANK()
+			)
+			
+			```
+		lineageTag: 7f0b78aa-e424-4ac9-9d82-d639ba62349c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Color $ Change Weekly' = ```
+			
+			     SWITCH(True(),
+			           [$ Change Weekly] < 0,"#D64550",
+			          
+			          [$ Change Weekly]> 0, "#30A128"
+			           )
+			```
+		lineageTag: 8235f019-cb03-4f28-a680-0e6fca42e8a5
+
+	measure 'Color % Change Weekly' = ```
+			
+			
+			     
+			     SWITCH(True(),
+			           [% Change Weekly] < 0,"#D64550",
+			          
+			          [% Change Weekly]> 0, "#30A128"
+			           
+			       )
+			```
+		lineageTag: a75c8341-469b-4328-81c7-98372dc76969
+
+	measure 'Last Year Sales_store' = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year]) - 1
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			VAR _Last_N_Weeks = [select N weeks]
+			
+			-- Find the last year's corresponding Week Ending Date
+			VAR EndDate =
+			    CALCULATE(
+			        MAX('Date'[Week ending]),
+			        FILTER(
+			            ALL('Date'),
+			            'Date'[Year] = SelectedYear &&
+			            'Date'[Week] = SelectedWeek
+			        )
+			    )
+			
+			-- Calculate Start Date for Different Week Ranges
+			VAR StartDate_1W = EndDate - 6
+			VAR StartDate_4W = EndDate - 27
+			VAR StartDate_13W = EndDate - 90
+			VAR StartDate_26W = EndDate - 181
+			VAR StartDate_52W = EndDate - 363
+			
+			-- Total Sales Calculation
+			RETURN
+			IF(
+			    _Last_N_Weeks = 9999, 
+			    [TTL YTD Sales LY],  -- Return YTD Sales if 9999 is selected
+			    SWITCH(
+			        _Last_N_Weeks,
+			        1, CALCULATE([Total sales], 'Date'[Date] >= StartDate_1W && 'Date'[Date] <= EndDate),
+			        4, CALCULATE([Total sales], 'Date'[Date] >= StartDate_4W && 'Date'[Date] <= EndDate),
+			        13, CALCULATE([Total sales], 'Date'[Date] >= StartDate_13W && 'Date'[Date] <= EndDate),
+			        26, CALCULATE([Total sales], 'Date'[Date] >= StartDate_26W && 'Date'[Date] <= EndDate),
+			        52, CALCULATE([Total sales], 'Date'[Date] >= StartDate_52W && 'Date'[Date] <= EndDate),
+			        BLANK()  -- Returns blank if no match
+			    )
+			)
+			
+			
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: weekly
+		lineageTag: cde9db5b-78da-4b3b-8d2e-a64756080bbe
+
+	measure 'This Year Sales_stores' = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year])
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			VAR _Last_N_Weeks = [select N weeks]
+			
+			-- Find the last year's corresponding Week Ending Date
+			VAR EndDate =
+			    CALCULATE(
+			        MAX('Date'[Week ending]),
+			        FILTER(
+			            ALL('Date'),
+			            'Date'[Year] = SelectedYear &&
+			            'Date'[Week] = SelectedWeek
+			        )
+			    )
+			
+			-- Calculate Start Date for Different Week Ranges
+			VAR StartDate_1W = EndDate - 6
+			VAR StartDate_4W = EndDate - 27
+			VAR StartDate_13W = EndDate - 90
+			VAR StartDate_26W = EndDate - 181
+			VAR StartDate_52W = EndDate - 363
+			
+			-- Total Sales Calculation
+			RETURN
+			IF(
+			    _Last_N_Weeks = 9999, 
+			    [TTL YTD Sales TY],  -- Return YTD Sales if 9999 is selected
+			    SWITCH(
+			        _Last_N_Weeks,
+			        1, CALCULATE([Total sales], 'Date'[Date] >= StartDate_1W && 'Date'[Date] <= EndDate),
+			        4, CALCULATE([Total sales], 'Date'[Date] >= StartDate_4W && 'Date'[Date] <= EndDate),
+			        13, CALCULATE([Total sales], 'Date'[Date] >= StartDate_13W && 'Date'[Date] <= EndDate),
+			        26, CALCULATE([Total sales], 'Date'[Date] >= StartDate_26W && 'Date'[Date] <= EndDate),
+			        52, CALCULATE([Total sales], 'Date'[Date] >= StartDate_52W && 'Date'[Date] <= EndDate),
+			        BLANK()  -- Returns blank if no match
+			    )
+			)
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: weekly
+		lineageTag: 130d2fcb-c9fc-43ad-b167-29c7127916e1
+
+	measure 'TTL Weekly Sales TY (Total)' = ```
+			
+			VAR s = MAX(CustomStoreTotal[Sort])
+			RETURN 
+			    SWITCH(
+			        TRUE(),
+			        s = 1, [TTL Weekly Sales TY(TTL)],     -- All Stores
+			        s = 2, [TTL Weekly Sales TY],          -- Filtered Stores
+			        BLANK()
+			    )
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Store/Store Filter Total
+		lineageTag: 844231b4-8595-4928-a8a9-2423dc32972b
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'TTL Weekly Sales TY(TTL)' = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year])
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			VAR _Last_N_Weeks = [select N weeks]
+			
+			
+			-- Find the last year's corresponding Week Ending Date
+			VAR EndDate =
+			    CALCULATE(
+			        MAX('Date'[Week ending]),
+			        FILTER(
+			            ALL('Date'),
+			            'Date'[Year] = SelectedYear &&
+			            'Date'[Week] = SelectedWeek
+			        )
+			    )
+			
+			-- Calculate Start Date for Different Week Ranges
+			VAR StartDate_1W = EndDate - 6
+			VAR StartDate_4W = EndDate - 27
+			VAR StartDate_13W = EndDate - 90
+			VAR StartDate_26W = EndDate - 181
+			VAR StartDate_52W = EndDate - 363
+			
+			-- Total Sales Calculation
+			RETURN
+			IF(
+			    _Last_N_Weeks = 9999, 
+			    [TTL YTD Sales TY],  -- Return YTD Sales if 9999 is selected
+			    SWITCH(
+			        _Last_N_Weeks,
+			        1, CALCULATE([Total sales], 'Date'[Date] >= StartDate_1W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        4, CALCULATE([Total sales], 'Date'[Date] >= StartDate_4W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        13, CALCULATE([Total sales], 'Date'[Date] >= StartDate_13W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        26, CALCULATE([Total sales], 'Date'[Date] >= StartDate_26W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        52, CALCULATE([Total sales], 'Date'[Date] >= StartDate_52W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        BLANK()  -- Returns blank if no match
+			    )
+			)
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: weekly
+		lineageTag: 3643bf33-8467-4abe-8ab2-6393e202e93b
+
+	measure 'TTL Weekly Sales LY(TTL)' = ```
+			
+			VAR SelectedYear = SELECTEDVALUE('Date'[Year]) - 1
+			VAR SelectedWeek = SELECTEDVALUE('Date'[Week])
+			VAR _Last_N_Weeks = [select N weeks]
+			
+			-- Find the last year's corresponding Week Ending Date
+			VAR EndDate =
+			    CALCULATE(
+			        MAX('Date'[Week ending]),
+			        FILTER(
+			            ALL('Date'),
+			            'Date'[Year] = SelectedYear &&
+			            'Date'[Week] = SelectedWeek
+			        )
+			    )
+			
+			-- Calculate Start Date for Different Week Ranges
+			VAR StartDate_1W = EndDate - 6
+			VAR StartDate_4W = EndDate - 27
+			VAR StartDate_13W = EndDate - 90
+			VAR StartDate_26W = EndDate - 181
+			VAR StartDate_52W = EndDate - 363
+			
+			-- Total Sales Calculation
+			RETURN
+			IF(
+			    _Last_N_Weeks = 9999, 
+			    [TTL YTD Sales LY],  -- Return YTD Sales if 9999 is selected
+			    SWITCH(
+			        _Last_N_Weeks,
+			        1, CALCULATE([Total sales], 'Date'[Date] >= StartDate_1W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        4, CALCULATE([Total sales], 'Date'[Date] >= StartDate_4W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        13, CALCULATE([Total sales], 'Date'[Date] >= StartDate_13W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        26, CALCULATE([Total sales], 'Date'[Date] >= StartDate_26W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        52, CALCULATE([Total sales], 'Date'[Date] >= StartDate_52W && 'Date'[Date] <= EndDate,ALL('Suncare Coverage Planning'[Store Num])),
+			        BLANK()  -- Returns blank if no match
+			    )
+			)
+			
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: weekly
+		lineageTag: 13a2bc61-6097-44c0-95f7-939ceb60a952
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure '% Change Weekly' = ```
+			
+			VAR x = [select N weeks]
+			VAR Change = abs(DIVIDE([TTL Weekly Sales TY], [TTL Weekly Sales LY])) - 1
+			RETURN 
+			    IF(Change = -1, BLANK(), Change)
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: weekly
+		lineageTag: 4e9920e3-5111-4cfc-a3d2-c8b2f50691ec
+
+		changedProperty = FormatString
+
+	measure HeaderText_retaiker_comparison = ```
+			
+			VAR SelectedWeeks = SELECTEDVALUE('Week Table'[Last N Weeks], "Select a Time Period")
+			RETURN SelectedWeeks & " Sales"
+			
+			```
+		displayFolder: Retailer_Camparison
+		lineageTag: 44e708a1-8e3e-43ca-b2fd-b77bda608c77
+
+	measure 'HeaderTextDiv Performance' = ```
+			
+			VAR SelectedWeeks = SELECTEDVALUE('Week Table'[Last N Weeks], "Select a Time Period")
+			RETURN SelectedWeeks & " Sales"
+			
+			```
+		lineageTag: f52ec47e-b3c8-4484-822d-67110a870de1
+
+	column Column1
+		dataType: string
+		lineageTag: 346b9f78-91a6-4437-87fe-5c5bfb998091
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Key Measures-a441e337-650c-481a-8134-c63259fe5786' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,59 @@
+table MTD
+	lineageTag: 82c5ef26-cb19-47b7-bfb5-cca6c4bfd872
+
+	column MTD
+		lineageTag: d84cdd4a-5143-486e-a2e8-fb2bde615650
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'MTD Order'
+
+		relatedColumnDetails
+			groupByColumn: 'MTD Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'MTD Fields'
+		isHidden
+		lineageTag: 726c9af9-937d-45cf-b302-fc6f28bf8532
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: Sort
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'MTD Order'
+		isHidden
+		formatString: 0
+		lineageTag: d6630efb-db6c-42b7-8dc6-1718bf802f5e
+		summarizeBy: none
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sort = IF('MTD'[MTD]=" MTD LY ",1,IF('MTD'[MTD]=" MTD TY ",2,IF('MTD'[MTD]="$ Change ",3)))
+		formatString: 0
+		lineageTag: df4c4941-d016-4f97-99c4-af8afa9a942b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition MTD-b529b885-881a-4b99-bf6b-6d81411a8b59 = calculated
+		mode: import
+		source = ```
+				{
+				    (" MTD LY ", NAMEOF('Key Measures'[TTL Weekly Sales LY]), 0),
+				    (" MTD TY ", NAMEOF('Key Measures'[TTL Weekly Sales TY]), 0),
+				    ("$ Change ", NAMEOF('Key Measures'[$ Change Weekly]), 0)   
+				}
+				```
+
+	annotation PBI_Id = 6bcab633515f436c80587262179aef46
+

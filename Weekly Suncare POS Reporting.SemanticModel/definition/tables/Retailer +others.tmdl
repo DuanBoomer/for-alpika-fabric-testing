@@ -1,0 +1,21 @@
+table 'Retailer +others'
+	lineageTag: 7104c5f1-2a01-4be6-ad88-60c895d94fbc
+
+	column Retailer
+		lineageTag: 3a727839-2a45-46ca-bc67-2dafe4b04c5a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Retailers[Retailer]
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Retailer +others-b001e07e-5a2f-4ceb-9e74-e5f7c1ea5e86' = calculated
+		mode: import
+		source =
+				UNION( VALUES(Retailers[Retailer]),
+				ROW("Customer","Others"))
+
+	annotation PBI_Id = c6bc08565d884c23bc54ca9f5fb07ebc
+

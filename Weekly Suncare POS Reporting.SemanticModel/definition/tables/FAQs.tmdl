@@ -1,0 +1,41 @@
+table FAQs
+	lineageTag: ec0dcca7-06d6-4ee1-9dae-f10467795adf
+
+	column Text
+		dataType: string
+		lineageTag: 50eb6705-0429-418e-b40b-c77efc13fd01
+		summarizeBy: none
+		sourceColumn: Text
+		sortByColumn: Sort
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: bc6244c9-5c44-47fd-badf-283aec2b6338
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sort
+		dataType: string
+		lineageTag: 8740e584-a148-4353-9617-d45964852539
+		summarizeBy: none
+		sourceColumn: Sort
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FAQs-8ffff953-ad58-401e-abdf-1576d25114bf = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45W8g1xUdJR8s3PK8lQKMnMyVFISSxJBYqYKMXqRCtFgmUjUxOLUCQNwZIhIT4KQAUKwYk5qcUKIZFAiZD8ksQcBYj6fAUXoGqYbEZmMVgcqMgIi24fvLp9EotLYLqN4bp9sdkN9QlOy02xaPfBrx3ZdjOl2FgA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Text = _t, Description = _t, Sort = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Text", type text}, {"Description", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

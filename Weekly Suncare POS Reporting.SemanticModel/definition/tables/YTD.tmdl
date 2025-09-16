@@ -1,0 +1,58 @@
+table YTD
+	lineageTag: 6a214171-6113-4e47-b181-796b2c9cff5e
+
+	column YTD
+		lineageTag: 53f14642-95d2-4a01-82df-368ad9944be9
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'YTD Order'
+
+		relatedColumnDetails
+			groupByColumn: 'YTD Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'YTD Fields'
+		isHidden
+		lineageTag: ef02d0c8-875c-459e-8d51-024202df0df1
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: Sort
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'YTD Order'
+		isHidden
+		formatString: 0
+		lineageTag: 71edf523-aa3f-4b0e-ac30-3893ff751e4e
+		summarizeBy: none
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sort = IF('YTD'[YTD]=" YTD LY ",1,IF('YTD'[YTD]=" YTD TY ",2,IF('YTD'[YTD]="$ Change ",3)))
+		formatString: 0
+		lineageTag: 53e0405c-81cb-44bc-b79b-80e5e449de7c
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition YTD-b215b0e3-1d73-44eb-97f0-28f8adaab689 = calculated
+		mode: import
+		source =
+				{
+				    (" YTD LY ", NAMEOF('Key Measures'[TTL YTD Sales LY]), 1),
+				    (" YTD TY ", NAMEOF('Key Measures'[TTL YTD Sales TY]), 1),
+				    ("$ Change ", NAMEOF('Key Measures'[$ Change YTD]), 1)
+				}
+
+	annotation PBI_Id = 790a6dba80be4bf49fa29f69fa498117
+

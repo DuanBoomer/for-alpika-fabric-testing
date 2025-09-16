@@ -1,0 +1,79 @@
+table 'Retailer Image'
+	lineageTag: 617814d0-4d87-4a60-860d-4d6612d0b779
+
+	measure 'Eucerin sun' = CALCULATE(SUM(FactTable[Value]),FactTable[Product]="Eucerin Sun")
+		lineageTag: b78ff894-7a2a-45c6-92c9-4da776c7c933
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Coppertone = CALCULATE(SUM(FactTable[Value]),FactTable[Product]="Coppertone")
+		lineageTag: 1ead437d-9c6d-41d6-b41e-625f80408897
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rank retailer (Eucerin Sun)' =
+			
+			If(NOT(ISBLANK([TTL weekly Sales TY (EUCERIN SUN)])), calculate(RANKX(ALL('Retailer Image'[Retailers],'Retailer Image'[ÙRL link]),'Key Measures'[TTL weekly Sales TY (EUCERIN SUN)]))
+			/* calculate(RANKX(ALL('Retailer Image'[Retailers],'Retailer Image'[ÙRL link]),[Total sales(Eucerin SUN)],,desc,skip),'FactTable'[Product]="EUCERIN SUN") */)
+		formatString: 0
+		lineageTag: d7f43909-25d3-491c-b0f6-464a0270c74b
+
+	measure 'Rank retailer (Coppertone)' =
+			
+			If(NOT(ISBLANK([TTL weekly Sales TY ( Coppertone)])), calculate(RANKX(ALL('Retailer Image'[Retailers],'Retailer Image'[ÙRL link]),'Key Measures'[TTL weekly Sales TY ( Coppertone)])))
+			//calculate(RANKX(ALL('Retailer Image'[Retailers],'Retailer Image'[ÙRL link]),[TTL MTD Sales TY ( Coppertone)]))
+			/* calculate(RANKX(ALL('Retailer Image'[Retailers],'Retailer Image'[ÙRL link]),[Total sales(coppertone)]),'FactTable'[Product]="COPPERTONE") */
+		formatString: 0
+		lineageTag: b0d823f3-b4e2-4675-a4fb-1773311f584a
+
+	measure 'rank x' = CALCULATE( RANKX(ALL('Retailer Image'[Retailers],'Retailer Image'[ÙRL link]),[Total sales]))
+		formatString: 0
+		lineageTag: d9eccb2d-2a55-4bd0-a94a-e40288f536f7
+
+	measure 'Rank retailer (CT)' =
+			
+			If(NOT(ISBLANK([TTL weekly Sales TY ( Coppertone)])), calculate(RANKX(ALL('Retailer Image'[Retailers],'Retailer Image'[ÙRL link]),'Key Measures'[TTL weekly Sales TY ( Coppertone)])))
+		formatString: 0
+		lineageTag: ac0ae7cd-35ae-4dc5-a490-4b154ba772a6
+
+	column Retailers
+		dataType: string
+		lineageTag: 1bcf3ad8-ca6b-41f3-8684-a946491d68aa
+		summarizeBy: none
+		sourceColumn: Retailers
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column1
+		dataType: string
+		lineageTag: 68f600b7-65f9-4a50-8180-03e2cdc798c0
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'ÙRL link'
+		dataType: string
+		lineageTag: fc932ec8-e27b-4141-90c2-adf83013c113
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: ÙRL link
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Retailer Image-73bf3623-75fd-45e7-bbcf-d897ca6602bd' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("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", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Retailers = _t, Column1 = _t, Column2 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Retailers", type text}, {"Column1", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Column2", "ÙRL link"}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Renamed Columns", each ([Retailers] <> "Rite Aid" and [Retailers] <> "Test" and [Retailers] <> "Test2"))
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
