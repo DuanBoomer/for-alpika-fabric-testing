@@ -55,18 +55,18 @@ from log_custom import fabric_log
 
 # CELL ********************
 
-date = "2025-04-24T23:59:59Z"
+# date = "2025-04-24T23:59:59Z"
 
-# filter = f"dateCreated>{date},dateModified>{date}"
-min_date_str = "2025-04-24T23:59:59Z"
-max_date= "2025-04-28T23:59:59Z"
+# # filter = f"dateCreated>{date},dateModified>{date}"
+# min_date_str = "2025-04-24T23:59:59Z"
+# max_date= "2025-04-28T23:59:59Z"
 
-filter_str = (
-        f"dateCreated>{min_date_str} and dateCreated<{max_date} or dateModified>{min_date_str} and dateModified<{max_date}"
-)
+# filter_str = (
+#         f"dateCreated>{min_date_str} and dateCreated<{max_date} or dateModified>{min_date_str} and dateModified<{max_date}"
+# )
 
-encoded_filter = quote_plus(filter)
-print(encoded_filter)
+# encoded_filter = quote_plus(filter)
+# print(encoded_filter)
 
 # METADATA ********************
 
@@ -75,17 +75,6 @@ print(encoded_filter)
 # META   "language_group": "synapse_pyspark",
 # META   "frozen": false,
 # META   "editable": true
-# META }
-
-# CELL ********************
-
-print(filter_str)
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
 # META }
 
 # CELL ********************
